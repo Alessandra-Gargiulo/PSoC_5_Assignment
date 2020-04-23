@@ -186,37 +186,35 @@ int main(void)
         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
     }
     
-    int16_t OutTemp;
+    int16_t OutX, OutY, OutZ;
     uint8_t header = 0xA0;
     uint8_t footer = 0xC0;
-    uint8_t OutArray[4]; 
-    uint8_t TemperatureData[2];
+    uint8_t OutArray[8]; 
+    uint8_t DataX[2], DataY[2], DataZ[2];
     
     OutArray[0] = header;
-    OutArray[3] = footer;
+    OutArray[7] = footer;
     
     for(;;)
     {
-        CyDelay(100);
-        /*
-        error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                                LIS3DH_OUT_ADC_3L,
-                                                2,
-                                                &TemperatureData[0]);
-        error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-                                            LIS3DH_OUT_ADC_3L,
-                                            &TemperatureData[0]);
+        CyDelay(10);
         
-        error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-                                            LIS3DH_OUT_ADC_3H,
-                                            &TemperatureData[1]);
-        if(error == NO_ERROR)
-        {
-            OutTemp = (int16)((TemperatureData[0] | (TemperatureData[1]<<8)))>>6;
-            OutArray[1] = (uint8_t)(OutTemp & 0xFF);
-            OutArray[2] = (uint8_t)(OutTemp >> 8);
-            UART_Debug_PutArray(OutArray, 4);
-        }*/
+        error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+                                                 LIS3DH_OUT_X_L,
+                                                 2,
+                                                 &DataX[0]);
+        
+        error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+                                                 LIS3DH_OUT_Y_L,
+                                                 2,
+                                                 &DataY[0]);
+        
+        error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+                                                 LIS3DH_OUT_Z_L,
+                                                 2,
+                                                 &DataZ[0]);
+        
+        
     }
 }
 
