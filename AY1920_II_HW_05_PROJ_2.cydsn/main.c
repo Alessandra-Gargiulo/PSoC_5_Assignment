@@ -197,7 +197,7 @@ int main(void)
     
     for(;;)
     {
-        CyDelay(10);
+        CyDelay(10); 
         
         error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
                                                  LIS3DH_OUT_X_L,
@@ -214,7 +214,29 @@ int main(void)
                                                  2,
                                                  &DataZ[0]);
         
-        
+         if(error == NO_ERROR)
+        {
+            OutX = (int16)((DataX[0] | (DataX[1]<<8)))>>6;
+            OutX = (OutX*4); /*Operation needed because the sensitity is of 4 mg/digit*/
+            OutArray[1] = (uint8_t)(OutX & 0xFF);
+            OutArray[2] = (uint8_t)(OutX >> 8);
+            
+            
+            OutY = (int16)((DataY[0] | (DataY[1]<<8)))>>6;
+            OutY = (OutY*4); /*Operation needed because the sensitity is of 4 mg/digit*/
+            OutArray[3] = (uint8_t)(OutY & 0xFF);
+            OutArray[4] = (uint8_t)(OutY >> 8);
+            
+            
+            OutZ = (int16)((DataZ[0] | (DataZ[1]<<8)))>>6;
+            OutZ = (OutZ*4); /*Operation needed because the sensitity is of 4 mg/digit*/
+            
+            OutArray[5] = (uint8_t)(OutZ & 0xFF);
+            OutArray[6] = (uint8_t)(OutZ >> 8);
+            
+            
+            UART_Debug_PutArray(OutArray, 8);
+        }
     }
 }
 
