@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 1
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 1
 
 
    1              		.syntax unified
@@ -35,2175 +35,2422 @@ ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 1
    5:main.c        **** * to understand the I2C protocol and communicate with a
    6:main.c        **** * a I2C Slave device (LIS3DH Accelerometer).
    7:main.c        **** *
-   8:main.c        **** */
-   9:main.c        **** 
-  10:main.c        **** // Include required header files
-  11:main.c        **** #include "I2C_Interface.h"
-  12:main.c        **** #include "project.h"
-  13:main.c        **** #include "stdio.h"
-  14:main.c        **** 
-  15:main.c        **** /**
-  16:main.c        **** *   \brief 7-bit I2C address of the slave device.
-  17:main.c        **** */
-  18:main.c        **** #define LIS3DH_DEVICE_ADDRESS 0x18
-  19:main.c        **** 
-  20:main.c        **** /**
-  21:main.c        **** *   \brief Address of the WHO AM I register
-  22:main.c        **** */
-  23:main.c        **** #define LIS3DH_WHO_AM_I_REG_ADDR 0x0F
-  24:main.c        **** 
-  25:main.c        **** /**
-  26:main.c        **** *   \brief Address of the Status register
-  27:main.c        **** */
-  28:main.c        **** #define LIS3DH_STATUS_REG 0x27
-  29:main.c        **** 
-  30:main.c        **** /**
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 2
+   8:main.c        **** * \date , 2020
+   9:main.c        **** */
+  10:main.c        **** 
+  11:main.c        **** // Include required header files
+  12:main.c        **** #include "I2C_Interface.h"
+  13:main.c        **** #include "project.h"
+  14:main.c        **** #include "stdio.h"
+  15:main.c        **** 
+  16:main.c        **** /**
+  17:main.c        **** *   \brief 7-bit I2C address of the slave device.
+  18:main.c        **** */
+  19:main.c        **** #define LIS3DH_DEVICE_ADDRESS 0x18
+  20:main.c        **** 
+  21:main.c        **** /**
+  22:main.c        **** *   \brief Address of the WHO AM I register
+  23:main.c        **** */
+  24:main.c        **** #define LIS3DH_WHO_AM_I_REG_ADDR 0x0F
+  25:main.c        **** 
+  26:main.c        **** /**
+  27:main.c        **** *   \brief Address of the Status register
+  28:main.c        **** */
+  29:main.c        **** #define LIS3DH_STATUS_REG 0x27
+  30:main.c        **** 
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 2
 
 
-  31:main.c        **** *   \brief Address of the Control register 1
-  32:main.c        **** */
-  33:main.c        **** #define LIS3DH_CTRL_REG1 0x20
-  34:main.c        **** 
-  35:main.c        **** /**
-  36:main.c        **** *   \brief Hex value to set high resolution mode at 100 Hz to the accelerator
-  37:main.c        **** */
-  38:main.c        **** #define LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG1 0x57
-  39:main.c        **** 
-  40:main.c        **** /**
-  41:main.c        **** *   \brief Address of the Control register 4
-  42:main.c        **** */
-  43:main.c        **** #define LIS3DH_CTRL_REG4 0x23
-  44:main.c        **** 
-  45:main.c        **** /*brief Hex value to set high resolution mode at 100 Hz to the accelerator and ±4.0 g FSR.*/
-  46:main.c        **** 
-  47:main.c        **** #define LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4 0x18
-  48:main.c        **** 
+  31:main.c        **** /**
+  32:main.c        **** *   \brief Address of the Control register 1
+  33:main.c        **** */
+  34:main.c        **** #define LIS3DH_CTRL_REG1 0x20
+  35:main.c        **** 
+  36:main.c        **** /**
+  37:main.c        **** *   \brief Hex value to set high resolution mode at 100 Hz to the accelerator
+  38:main.c        **** */
+  39:main.c        **** #define LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG1 0x57
+  40:main.c        **** 
+  41:main.c        **** /**
+  42:main.c        **** *   \brief Address of the Control register 4
+  43:main.c        **** */
+  44:main.c        **** #define LIS3DH_CTRL_REG4 0x23
+  45:main.c        **** 
+  46:main.c        **** /*brief Hex value to set high resolution mode at 100 Hz to the accelerator and ±4.0 g FSR.*/
+  47:main.c        **** 
+  48:main.c        **** #define LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4 0x18
   49:main.c        **** 
-  50:main.c        **** /**
-  51:main.c        **** *   \brief Address of the x-axis acceleration data output LSB register
-  52:main.c        **** */
-  53:main.c        **** #define LIS3DH_OUT_X_L 0x028
-  54:main.c        **** 
-  55:main.c        **** /**
-  56:main.c        **** *   \brief Address of the y-axis acceleration data output LSB register
-  57:main.c        **** */
-  58:main.c        **** #define LIS3DH_OUT_Y_L 0x02A
-  59:main.c        **** 
-  60:main.c        **** /**
-  61:main.c        **** *   \brief Address of the z-axis acceleration data output LSB register
-  62:main.c        **** */
-  63:main.c        **** #define LIS3DH_OUT_Z_L 0x02C
-  64:main.c        **** 
-  65:main.c        **** /*Thanks to the multiread function, we don't need to specify the MSB register address */
-  66:main.c        **** 
+  50:main.c        **** 
+  51:main.c        **** /**
+  52:main.c        **** *   \brief Address of the x-axis acceleration data output LSB register
+  53:main.c        **** */
+  54:main.c        **** #define LIS3DH_OUT_X_L 0x028
+  55:main.c        **** 
+  56:main.c        **** /**
+  57:main.c        **** *   \brief Address of the y-axis acceleration data output LSB register
+  58:main.c        **** */
+  59:main.c        **** #define LIS3DH_OUT_Y_L 0x02A
+  60:main.c        **** 
+  61:main.c        **** /**
+  62:main.c        **** *   \brief Address of the z-axis acceleration data output LSB register
+  63:main.c        **** */
+  64:main.c        **** #define LIS3DH_OUT_Z_L 0x02C
+  65:main.c        **** 
+  66:main.c        **** /*Thanks to the multiread function, we don't need to specify the MSB register address */
   67:main.c        **** 
-  68:main.c        **** int main(void)
-  69:main.c        **** {
-  28              		.loc 1 69 0
+  68:main.c        **** 
+  69:main.c        **** int main(void)
+  70:main.c        **** {
+  28              		.loc 1 70 0
   29              		.cfi_startproc
-  30              		@ args = 0, pretend = 0, frame = 56
+  30              		@ args = 0, pretend = 0, frame = 80
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32 0000 10B5     		push	{r4, lr}
   33              		.cfi_def_cfa_offset 8
   34              		.cfi_offset 4, -8
   35              		.cfi_offset 14, -4
-  36 0002 8EB0     		sub	sp, sp, #56
-  37              		.cfi_def_cfa_offset 64
-  70:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
-  38              		.loc 1 70 0
+  36 0002 94B0     		sub	sp, sp, #80
+  37              		.cfi_def_cfa_offset 88
+  71:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  38              		.loc 1 71 0
   39              		.syntax unified
-  40              	@ 70 "main.c" 1
+  40              	@ 71 "main.c" 1
   41 0004 62B6     		CPSIE   i
   42              	@ 0 "" 2
-  71:main.c        **** 
-  72:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 3
+  72:main.c        **** 
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 3
 
 
-  73:main.c        ****     I2C_Peripheral_Start();
-  43              		.loc 1 73 0
+  73:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+  74:main.c        ****     I2C_Peripheral_Start();
+  43              		.loc 1 74 0
   44              		.thumb
   45              		.syntax unified
   46 0006 FFF7FEFF 		bl	I2C_Peripheral_Start
   47              	.LVL0:
-  74:main.c        ****     UART_Debug_Start();
-  48              		.loc 1 74 0
+  75:main.c        ****     UART_Debug_Start();
+  48              		.loc 1 75 0
   49 000a FFF7FEFF 		bl	UART_Debug_Start
   50              	.LVL1:
-  75:main.c        ****     
-  76:main.c        ****     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
-  51              		.loc 1 76 0
+  76:main.c        ****     
+  77:main.c        ****     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
+  51              		.loc 1 77 0
   52 000e 0520     		movs	r0, #5
   53 0010 FFF7FEFF 		bl	CyDelay
   54              	.LVL2:
   55              	.LBB2:
-  77:main.c        ****     
-  78:main.c        ****     // String to print out messages on the UART
-  79:main.c        ****     char message[50];
-  80:main.c        **** 
-  81:main.c        ****     // Check which devices are present on the I2C bus
-  82:main.c        ****     for (int i = 0 ; i < 128; i++)
-  56              		.loc 1 82 0
+  78:main.c        ****     
+  79:main.c        ****     // String to print out messages on the UART
+  80:main.c        ****     char message[50];
+  81:main.c        **** 
+  82:main.c        ****     // Check which devices are present on the I2C bus
+  83:main.c        ****     for (int i = 0 ; i < 128; i++)
+  56              		.loc 1 83 0
   57 0014 0024     		movs	r4, #0
   58 0016 0CE0     		b	.L2
   59              	.LVL3:
   60              	.L4:
-  83:main.c        ****     {
-  84:main.c        ****         if (I2C_Peripheral_IsDeviceConnected(i))
-  61              		.loc 1 84 0
+  84:main.c        ****     {
+  85:main.c        ****         if (I2C_Peripheral_IsDeviceConnected(i))
+  61              		.loc 1 85 0
   62 0018 E0B2     		uxtb	r0, r4
   63 001a FFF7FEFF 		bl	I2C_Peripheral_IsDeviceConnected
   64              	.LVL4:
   65 001e 38B1     		cbz	r0, .L3
-  85:main.c        ****         {
-  86:main.c        ****             // print out the address is hex format
-  87:main.c        ****             sprintf(message, "Device 0x%02X is connected\r\n", i);
-  66              		.loc 1 87 0
+  86:main.c        ****         {
+  87:main.c        ****             // print out the address is hex format
+  88:main.c        ****             sprintf(message, "Device 0x%02X is connected\r\n", i);
+  66              		.loc 1 88 0
   67 0020 2246     		mov	r2, r4
-  68 0022 5C49     		ldr	r1, .L22
-  69 0024 01A8     		add	r0, sp, #4
+  68 0022 6749     		ldr	r1, .L18
+  69 0024 07A8     		add	r0, sp, #28
   70 0026 FFF7FEFF 		bl	sprintf
   71              	.LVL5:
-  88:main.c        ****             UART_Debug_PutString(message); 
-  72              		.loc 1 88 0
-  73 002a 01A8     		add	r0, sp, #4
+  89:main.c        ****             UART_Debug_PutString(message); 
+  72              		.loc 1 89 0
+  73 002a 07A8     		add	r0, sp, #28
   74 002c FFF7FEFF 		bl	UART_Debug_PutString
   75              	.LVL6:
   76              	.L3:
-  82:main.c        ****     {
-  77              		.loc 1 82 0 discriminator 2
+  83:main.c        ****     {
+  77              		.loc 1 83 0 discriminator 2
   78 0030 0134     		adds	r4, r4, #1
   79              	.LVL7:
   80              	.L2:
-  82:main.c        ****     {
-  81              		.loc 1 82 0 is_stmt 0 discriminator 1
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 4
+  83:main.c        ****     {
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 4
 
 
+  81              		.loc 1 83 0 is_stmt 0 discriminator 1
   82 0032 7F2C     		cmp	r4, #127
   83 0034 F0DD     		ble	.L4
   84              	.LBE2:
-  89:main.c        ****         }
-  90:main.c        ****         
-  91:main.c        ****     }
-  92:main.c        ****     
-  93:main.c        ****     /******************************************/
-  94:main.c        ****     /*            I2C Reading                 */
-  95:main.c        ****     /******************************************/
-  96:main.c        ****     
-  97:main.c        ****     /* Read WHO AM I REGISTER register */
-  98:main.c        ****     uint8_t who_am_i_reg;
-  99:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-  85              		.loc 1 99 0 is_stmt 1
-  86 0036 0DF10302 		add	r2, sp, #3
+  90:main.c        ****         }
+  91:main.c        ****         
+  92:main.c        ****     }
+  93:main.c        ****     
+  94:main.c        ****     /******************************************/
+  95:main.c        ****     /*            I2C Reading                 */
+  96:main.c        ****     /******************************************/
+  97:main.c        ****     
+  98:main.c        ****     /* Read WHO AM I REGISTER register */
+  99:main.c        ****     uint8_t who_am_i_reg;
+ 100:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+  85              		.loc 1 100 0 is_stmt 1
+  86 0036 0DF11B02 		add	r2, sp, #27
   87 003a 0F21     		movs	r1, #15
   88 003c 1820     		movs	r0, #24
   89 003e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
   90              	.LVL8:
- 100:main.c        ****                                                   LIS3DH_WHO_AM_I_REG_ADDR, 
- 101:main.c        ****                                                   &who_am_i_reg);
- 102:main.c        ****     if (error == NO_ERROR)
-  91              		.loc 1 102 0
+ 101:main.c        ****                                                   LIS3DH_WHO_AM_I_REG_ADDR, 
+ 102:main.c        ****                                                   &who_am_i_reg);
+ 103:main.c        ****     if (error == NO_ERROR)
+  91              		.loc 1 103 0
   92 0042 48B9     		cbnz	r0, .L5
- 103:main.c        ****     {
- 104:main.c        ****         sprintf(message, "WHO AM I REG: 0x%02X [Expected: 0x33]\r\n", who_am_i_reg);
-  93              		.loc 1 104 0
-  94 0044 9DF80320 		ldrb	r2, [sp, #3]	@ zero_extendqisi2
-  95 0048 5349     		ldr	r1, .L22+4
-  96 004a 01A8     		add	r0, sp, #4
+ 104:main.c        ****     {
+ 105:main.c        ****         sprintf(message, "WHO AM I REG: 0x%02X [Expected: 0x33]\r\n", who_am_i_reg);
+  93              		.loc 1 105 0
+  94 0044 9DF81B20 		ldrb	r2, [sp, #27]	@ zero_extendqisi2
+  95 0048 5E49     		ldr	r1, .L18+4
+  96 004a 07A8     		add	r0, sp, #28
   97              	.LVL9:
   98 004c FFF7FEFF 		bl	sprintf
   99              	.LVL10:
- 105:main.c        ****         UART_Debug_PutString(message); 
- 100              		.loc 1 105 0
- 101 0050 01A8     		add	r0, sp, #4
+ 106:main.c        ****         UART_Debug_PutString(message); 
+ 100              		.loc 1 106 0
+ 101 0050 07A8     		add	r0, sp, #28
  102 0052 FFF7FEFF 		bl	UART_Debug_PutString
  103              	.LVL11:
  104 0056 02E0     		b	.L6
  105              	.LVL12:
  106              	.L5:
- 106:main.c        ****     }
- 107:main.c        ****     else
- 108:main.c        ****     {
- 109:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm\r\n");   
- 107              		.loc 1 109 0
- 108 0058 5048     		ldr	r0, .L22+8
+ 107:main.c        ****     }
+ 108:main.c        ****     else
+ 109:main.c        ****     {
+ 110:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm\r\n");   
+ 107              		.loc 1 110 0
+ 108 0058 5B48     		ldr	r0, .L18+8
  109              	.LVL13:
  110 005a FFF7FEFF 		bl	UART_Debug_PutString
  111              	.LVL14:
  112              	.L6:
- 110:main.c        ****     }
- 111:main.c        ****     
+ 111:main.c        ****     }
  112:main.c        ****     
  113:main.c        ****     
- 114:main.c        ****     /*      I2C Reading Status Register       */
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 5
+ 114:main.c        ****     
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 5
 
 
- 115:main.c        ****     
- 116:main.c        ****     uint8_t status_register; 
- 117:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 113              		.loc 1 117 0
- 114 005e 0DF10202 		add	r2, sp, #2
- 115 0062 2721     		movs	r1, #39
+ 115:main.c        ****     /******************************************/
+ 116:main.c        ****     /*        Read Control Register 1         */
+ 117:main.c        ****     /******************************************/
+ 118:main.c        ****     uint8_t ctrl_reg1; 
+ 119:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 113              		.loc 1 119 0
+ 114 005e 0DF11A02 		add	r2, sp, #26
+ 115 0062 2021     		movs	r1, #32
  116 0064 1820     		movs	r0, #24
  117 0066 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  118              	.LVL15:
- 118:main.c        ****                                         LIS3DH_STATUS_REG,
- 119:main.c        ****                                         &status_register);
- 120:main.c        ****     
- 121:main.c        ****     if (error == NO_ERROR)
- 119              		.loc 1 121 0
+ 120:main.c        ****                                         LIS3DH_CTRL_REG1,
+ 121:main.c        ****                                         &ctrl_reg1);
+ 122:main.c        ****     
+ 123:main.c        ****     if (error == NO_ERROR)
+ 119              		.loc 1 123 0
  120 006a 48B9     		cbnz	r0, .L7
- 122:main.c        ****     {
- 123:main.c        ****         sprintf(message, "STATUS REGISTER: 0x%02X\r\n", status_register);
- 121              		.loc 1 123 0
- 122 006c 9DF80220 		ldrb	r2, [sp, #2]	@ zero_extendqisi2
- 123 0070 4B49     		ldr	r1, .L22+12
- 124 0072 01A8     		add	r0, sp, #4
+ 124:main.c        ****     {
+ 125:main.c        ****         sprintf(message, "CONTROL REGISTER 1: 0x%02X\r\n", ctrl_reg1);
+ 121              		.loc 1 125 0
+ 122 006c 9DF81A20 		ldrb	r2, [sp, #26]	@ zero_extendqisi2
+ 123 0070 5649     		ldr	r1, .L18+12
+ 124 0072 07A8     		add	r0, sp, #28
  125              	.LVL16:
  126 0074 FFF7FEFF 		bl	sprintf
  127              	.LVL17:
- 124:main.c        ****         UART_Debug_PutString(message); 
- 128              		.loc 1 124 0
- 129 0078 01A8     		add	r0, sp, #4
+ 126:main.c        ****         UART_Debug_PutString(message); 
+ 128              		.loc 1 126 0
+ 129 0078 07A8     		add	r0, sp, #28
  130 007a FFF7FEFF 		bl	UART_Debug_PutString
  131              	.LVL18:
  132 007e 02E0     		b	.L8
  133              	.LVL19:
  134              	.L7:
- 125:main.c        ****     }
- 126:main.c        ****     else
- 127:main.c        ****     {
- 128:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read status register\r\n");   
- 135              		.loc 1 128 0
- 136 0080 4848     		ldr	r0, .L22+16
+ 127:main.c        ****     }
+ 128:main.c        ****     else
+ 129:main.c        ****     {
+ 130:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
+ 135              		.loc 1 130 0
+ 136 0080 5348     		ldr	r0, .L18+16
  137              	.LVL20:
  138 0082 FFF7FEFF 		bl	UART_Debug_PutString
  139              	.LVL21:
  140              	.L8:
- 129:main.c        ****     }
- 130:main.c        ****     
- 131:main.c        ****     /******************************************/
- 132:main.c        ****     /*        Read Control Register 1         */
+ 131:main.c        ****     }
+ 132:main.c        ****     
  133:main.c        ****     /******************************************/
- 134:main.c        ****     uint8_t ctrl_reg1; 
- 135:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 141              		.loc 1 135 0
- 142 0086 0DF10102 		add	r2, sp, #1
- 143 008a 2021     		movs	r1, #32
+ 134:main.c        ****     /*        Read Control Register 4        */
+ 135:main.c        ****     /******************************************/
+ 136:main.c        ****     uint8_t ctrl_reg4; 
+ 137:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 141              		.loc 1 137 0
+ 142 0086 0DF11902 		add	r2, sp, #25
+ 143 008a 2321     		movs	r1, #35
  144 008c 1820     		movs	r0, #24
  145 008e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  146              	.LVL22:
- 136:main.c        ****                                         LIS3DH_CTRL_REG1,
- 137:main.c        ****                                         &ctrl_reg1);
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 6
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 6
 
 
- 138:main.c        ****     
- 139:main.c        ****     if (error == NO_ERROR)
- 147              		.loc 1 139 0
+ 138:main.c        ****                                         LIS3DH_CTRL_REG4,
+ 139:main.c        ****                                         &ctrl_reg4);
+ 140:main.c        ****     
+ 141:main.c        ****     if (error == NO_ERROR)
+ 147              		.loc 1 141 0
  148 0092 48B9     		cbnz	r0, .L9
- 140:main.c        ****     {
- 141:main.c        ****         sprintf(message, "CONTROL REGISTER 1: 0x%02X\r\n", ctrl_reg1);
- 149              		.loc 1 141 0
- 150 0094 9DF80120 		ldrb	r2, [sp, #1]	@ zero_extendqisi2
- 151 0098 4349     		ldr	r1, .L22+20
- 152 009a 01A8     		add	r0, sp, #4
+ 142:main.c        ****     {
+ 143:main.c        ****         sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
+ 149              		.loc 1 143 0
+ 150 0094 9DF81920 		ldrb	r2, [sp, #25]	@ zero_extendqisi2
+ 151 0098 4E49     		ldr	r1, .L18+20
+ 152 009a 07A8     		add	r0, sp, #28
  153              	.LVL23:
  154 009c FFF7FEFF 		bl	sprintf
  155              	.LVL24:
- 142:main.c        ****         UART_Debug_PutString(message); 
- 156              		.loc 1 142 0
- 157 00a0 01A8     		add	r0, sp, #4
+ 144:main.c        ****         UART_Debug_PutString(message); 
+ 156              		.loc 1 144 0
+ 157 00a0 07A8     		add	r0, sp, #28
  158 00a2 FFF7FEFF 		bl	UART_Debug_PutString
  159              	.LVL25:
  160 00a6 02E0     		b	.L10
  161              	.LVL26:
  162              	.L9:
- 143:main.c        ****     }
- 144:main.c        ****     else
- 145:main.c        ****     {
- 146:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
- 163              		.loc 1 146 0
- 164 00a8 4048     		ldr	r0, .L22+24
+ 145:main.c        ****     }
+ 146:main.c        ****     else
+ 147:main.c        ****     {
+ 148:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 4\r\n");   
+ 163              		.loc 1 148 0
+ 164 00a8 4B48     		ldr	r0, .L18+24
  165              	.LVL27:
  166 00aa FFF7FEFF 		bl	UART_Debug_PutString
  167              	.LVL28:
  168              	.L10:
- 147:main.c        ****     }
- 148:main.c        ****     
- 149:main.c        ****     /******************************************/
- 150:main.c        ****     /*        Read Control Register 4        */
+ 149:main.c        ****     }
+ 150:main.c        ****     
  151:main.c        ****     /******************************************/
- 152:main.c        ****     uint8_t ctrl_reg4; 
- 153:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 169              		.loc 1 153 0
- 170 00ae 6A46     		mov	r2, sp
- 171 00b0 2321     		movs	r1, #35
- 172 00b2 1820     		movs	r0, #24
- 173 00b4 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 174              	.LVL29:
- 154:main.c        ****                                         LIS3DH_CTRL_REG4,
- 155:main.c        ****                                         &ctrl_reg4);
- 156:main.c        ****     
- 157:main.c        ****     if (error == NO_ERROR)
- 175              		.loc 1 157 0
- 176 00b8 48B9     		cbnz	r0, .L11
- 158:main.c        ****     {
- 159:main.c        ****         sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
- 177              		.loc 1 159 0
- 178 00ba 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
- 179 00be 3C49     		ldr	r1, .L22+28
- 180 00c0 01A8     		add	r0, sp, #4
- 181              	.LVL30:
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 7
+ 152:main.c        ****     /*            I2C Writing 
+ 153:main.c        ****                Control Register 1             */
+ 154:main.c        ****     /******************************************/
+ 155:main.c        ****     
+ 156:main.c        ****         
+ 157:main.c        ****     UART_Debug_PutString("\r\nWriting new values..\r\n");
+ 169              		.loc 1 157 0
+ 170 00ae 4B48     		ldr	r0, .L18+28
+ 171 00b0 FFF7FEFF 		bl	UART_Debug_PutString
+ 172              	.LVL29:
+ 158:main.c        ****     
+ 159:main.c        ****     if (ctrl_reg1 != LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG1)
+ 173              		.loc 1 159 0
+ 174 00b4 9DF81A30 		ldrb	r3, [sp, #26]	@ zero_extendqisi2
+ 175 00b8 572B     		cmp	r3, #87
+ 176 00ba 14D0     		beq	.L11
+ 160:main.c        ****     {
+ 161:main.c        ****         ctrl_reg1 = LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG1;
+ 177              		.loc 1 161 0
+ 178 00bc 5722     		movs	r2, #87
+ 179 00be 8DF81A20 		strb	r2, [sp, #26]
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 7
 
 
- 182 00c2 FFF7FEFF 		bl	sprintf
- 183              	.LVL31:
- 160:main.c        ****         UART_Debug_PutString(message); 
- 184              		.loc 1 160 0
- 185 00c6 01A8     		add	r0, sp, #4
- 186 00c8 FFF7FEFF 		bl	UART_Debug_PutString
- 187              	.LVL32:
- 188 00cc 02E0     		b	.L12
- 189              	.LVL33:
- 190              	.L11:
- 161:main.c        ****     }
- 162:main.c        ****     else
- 163:main.c        ****     {
- 164:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 4\r\n");   
- 191              		.loc 1 164 0
- 192 00ce 3948     		ldr	r0, .L22+32
- 193              	.LVL34:
- 194 00d0 FFF7FEFF 		bl	UART_Debug_PutString
- 195              	.LVL35:
- 196              	.L12:
- 165:main.c        ****     }
+ 162:main.c        ****     
+ 163:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ 180              		.loc 1 163 0
+ 181 00c2 2021     		movs	r1, #32
+ 182 00c4 1820     		movs	r0, #24
+ 183 00c6 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
+ 184              	.LVL30:
+ 164:main.c        ****                                              LIS3DH_CTRL_REG1,
+ 165:main.c        ****                                              ctrl_reg1);
  166:main.c        ****     
- 167:main.c        ****     /******************************************/
- 168:main.c        ****     /*            I2C Writing                 */
- 169:main.c        ****     /******************************************/
- 170:main.c        ****     
- 171:main.c        ****         
- 172:main.c        ****     UART_Debug_PutString("\r\nWriting new values..\r\n");
- 197              		.loc 1 172 0
- 198 00d4 3848     		ldr	r0, .L22+36
- 199 00d6 FFF7FEFF 		bl	UART_Debug_PutString
- 200              	.LVL36:
- 173:main.c        ****     
- 174:main.c        ****     if (ctrl_reg1 != LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG1)
+ 167:main.c        ****         if (error == NO_ERROR)
+ 185              		.loc 1 167 0
+ 186 00ca 48B9     		cbnz	r0, .L12
+ 168:main.c        ****         {
+ 169:main.c        ****             sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
+ 187              		.loc 1 169 0
+ 188 00cc 9DF81A20 		ldrb	r2, [sp, #26]	@ zero_extendqisi2
+ 189 00d0 4349     		ldr	r1, .L18+32
+ 190 00d2 07A8     		add	r0, sp, #28
+ 191              	.LVL31:
+ 192 00d4 FFF7FEFF 		bl	sprintf
+ 193              	.LVL32:
+ 170:main.c        ****             UART_Debug_PutString(message); 
+ 194              		.loc 1 170 0
+ 195 00d8 07A8     		add	r0, sp, #28
+ 196 00da FFF7FEFF 		bl	UART_Debug_PutString
+ 197              	.LVL33:
+ 198 00de 02E0     		b	.L11
+ 199              	.LVL34:
+ 200              	.L12:
+ 171:main.c        ****         }
+ 172:main.c        ****         else
+ 173:main.c        ****         {
+ 174:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
  201              		.loc 1 174 0
- 202 00da 9DF80130 		ldrb	r3, [sp, #1]	@ zero_extendqisi2
- 203 00de 572B     		cmp	r3, #87
- 204 00e0 14D0     		beq	.L13
- 175:main.c        ****     {
- 176:main.c        ****         ctrl_reg1 = LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG1;
- 205              		.loc 1 176 0
- 206 00e2 5722     		movs	r2, #87
- 207 00e4 8DF80120 		strb	r2, [sp, #1]
- 177:main.c        ****     
- 178:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
- 208              		.loc 1 178 0
- 209 00e8 2021     		movs	r1, #32
- 210 00ea 1820     		movs	r0, #24
- 211 00ec FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
- 212              	.LVL37:
- 179:main.c        ****                                              LIS3DH_CTRL_REG1,
- 180:main.c        ****                                              ctrl_reg1);
+ 202 00e0 4048     		ldr	r0, .L18+36
+ 203              	.LVL35:
+ 204 00e2 FFF7FEFF 		bl	UART_Debug_PutString
+ 205              	.LVL36:
+ 206              	.L11:
+ 175:main.c        ****         }
+ 176:main.c        ****     }
+ 177:main.c        ****      /******************************************/
+ 178:main.c        ****     /*            I2C Writing 
+ 179:main.c        ****                Control Register 4             */
+ 180:main.c        ****     /******************************************/
  181:main.c        ****     
- 182:main.c        ****         if (error == NO_ERROR)
- 213              		.loc 1 182 0
- 214 00f0 48B9     		cbnz	r0, .L14
- 183:main.c        ****         {
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 8
+ 182:main.c        ****     UART_Debug_PutString("\r\nWriting new values..\r\n");
+ 207              		.loc 1 182 0
+ 208 00e6 3D48     		ldr	r0, .L18+28
+ 209 00e8 FFF7FEFF 		bl	UART_Debug_PutString
+ 210              	.LVL37:
+ 183:main.c        ****     
+ 184:main.c        ****     if (ctrl_reg4 != LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4)
+ 211              		.loc 1 184 0
+ 212 00ec 9DF81930 		ldrb	r3, [sp, #25]	@ zero_extendqisi2
+ 213 00f0 182B     		cmp	r3, #24
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 8
 
 
- 184:main.c        ****             sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
- 215              		.loc 1 184 0
- 216 00f2 9DF80120 		ldrb	r2, [sp, #1]	@ zero_extendqisi2
- 217 00f6 3149     		ldr	r1, .L22+40
- 218 00f8 01A8     		add	r0, sp, #4
- 219              	.LVL38:
- 220 00fa FFF7FEFF 		bl	sprintf
- 221              	.LVL39:
- 185:main.c        ****             UART_Debug_PutString(message); 
- 222              		.loc 1 185 0
- 223 00fe 01A8     		add	r0, sp, #4
- 224 0100 FFF7FEFF 		bl	UART_Debug_PutString
- 225              	.LVL40:
- 226 0104 02E0     		b	.L13
- 227              	.LVL41:
- 228              	.L14:
- 186:main.c        ****         }
- 187:main.c        ****         else
- 188:main.c        ****         {
- 189:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
- 229              		.loc 1 189 0
- 230 0106 2E48     		ldr	r0, .L22+44
- 231              	.LVL42:
- 232 0108 FFF7FEFF 		bl	UART_Debug_PutString
- 233              	.LVL43:
- 234              	.L13:
- 190:main.c        ****         }
- 191:main.c        ****     }
- 192:main.c        ****     
- 193:main.c        ****     UART_Debug_PutString("\r\nWriting new values..\r\n");
- 235              		.loc 1 193 0
- 236 010c 2A48     		ldr	r0, .L22+36
- 237 010e FFF7FEFF 		bl	UART_Debug_PutString
- 238              	.LVL44:
- 194:main.c        ****     
- 195:main.c        ****     if (ctrl_reg4 != LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4)
- 239              		.loc 1 195 0
- 240 0112 9DF80030 		ldrb	r3, [sp]	@ zero_extendqisi2
- 241 0116 182B     		cmp	r3, #24
- 242 0118 14D0     		beq	.L15
- 196:main.c        ****     {
- 197:main.c        ****         ctrl_reg4 = LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4;
- 243              		.loc 1 197 0
- 244 011a 1820     		movs	r0, #24
- 245 011c 8DF80000 		strb	r0, [sp]
- 198:main.c        ****     
- 199:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
- 246              		.loc 1 199 0
- 247 0120 0246     		mov	r2, r0
- 248 0122 2321     		movs	r1, #35
- 249 0124 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
- 250              	.LVL45:
- 200:main.c        ****                                              LIS3DH_CTRL_REG4,
- 201:main.c        ****                                              ctrl_reg4);
+ 214 00f2 14D0     		beq	.L13
+ 185:main.c        ****     {
+ 186:main.c        ****         ctrl_reg4 = LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4;
+ 215              		.loc 1 186 0
+ 216 00f4 1820     		movs	r0, #24
+ 217 00f6 8DF81900 		strb	r0, [sp, #25]
+ 187:main.c        ****     
+ 188:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ 218              		.loc 1 188 0
+ 219 00fa 0246     		mov	r2, r0
+ 220 00fc 2321     		movs	r1, #35
+ 221 00fe FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
+ 222              	.LVL38:
+ 189:main.c        ****                                              LIS3DH_CTRL_REG4,
+ 190:main.c        ****                                              ctrl_reg4);
+ 191:main.c        ****     
+ 192:main.c        ****         if (error == NO_ERROR)
+ 223              		.loc 1 192 0
+ 224 0102 48B9     		cbnz	r0, .L14
+ 193:main.c        ****         {
+ 194:main.c        ****             sprintf(message, "CONTROL REGISTER 4 successfully written as: 0x%02X\r\n", ctrl_reg4);
+ 225              		.loc 1 194 0
+ 226 0104 9DF81920 		ldrb	r2, [sp, #25]	@ zero_extendqisi2
+ 227 0108 3749     		ldr	r1, .L18+40
+ 228 010a 07A8     		add	r0, sp, #28
+ 229              	.LVL39:
+ 230 010c FFF7FEFF 		bl	sprintf
+ 231              	.LVL40:
+ 195:main.c        ****             UART_Debug_PutString(message); 
+ 232              		.loc 1 195 0
+ 233 0110 07A8     		add	r0, sp, #28
+ 234 0112 FFF7FEFF 		bl	UART_Debug_PutString
+ 235              	.LVL41:
+ 236 0116 02E0     		b	.L13
+ 237              	.LVL42:
+ 238              	.L14:
+ 196:main.c        ****         }
+ 197:main.c        ****         else
+ 198:main.c        ****         {
+ 199:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 4\r\n");  
+ 239              		.loc 1 199 0
+ 240 0118 3448     		ldr	r0, .L18+44
+ 241              	.LVL43:
+ 242 011a FFF7FEFF 		bl	UART_Debug_PutString
+ 243              	.LVL44:
+ 244              	.L13:
+ 200:main.c        ****         }
+ 201:main.c        ****     }
  202:main.c        ****     
- 203:main.c        ****         if (error == NO_ERROR)
- 251              		.loc 1 203 0
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 9
+ 203:main.c        ****     int16_t OutX, OutY, OutZ;
+ 204:main.c        ****     uint8_t header = 0xA0;
+ 205:main.c        ****     uint8_t footer = 0xC0;
+ 206:main.c        ****     uint8_t OutArray[8]; 
+ 207:main.c        ****     uint8_t AccData[6];
+ 208:main.c        ****     uint8_t status_register;
+ 209:main.c        ****     
+ 210:main.c        ****     OutArray[0] = header;
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 9
 
 
- 252 0128 48B9     		cbnz	r0, .L16
- 204:main.c        ****         {
- 205:main.c        ****             sprintf(message, "CONTROL REGISTER 4 successfully written as: 0x%02X\r\n", ctrl_reg4);
- 253              		.loc 1 205 0
- 254 012a 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
- 255 012e 2549     		ldr	r1, .L22+48
- 256 0130 01A8     		add	r0, sp, #4
- 257              	.LVL46:
- 258 0132 FFF7FEFF 		bl	sprintf
- 259              	.LVL47:
- 206:main.c        ****             UART_Debug_PutString(message); 
- 260              		.loc 1 206 0
- 261 0136 01A8     		add	r0, sp, #4
- 262 0138 FFF7FEFF 		bl	UART_Debug_PutString
- 263              	.LVL48:
- 264 013c 02E0     		b	.L15
- 265              	.LVL49:
- 266              	.L16:
- 207:main.c        ****         }
- 208:main.c        ****         else
- 209:main.c        ****         {
- 210:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 4\r\n");  
- 267              		.loc 1 210 0
- 268 013e 2248     		ldr	r0, .L22+52
- 269              	.LVL50:
- 270 0140 FFF7FEFF 		bl	UART_Debug_PutString
- 271              	.LVL51:
- 272              	.L15:
- 211:main.c        ****         }
- 212:main.c        ****     }
- 213:main.c        ****     
- 214:main.c        ****     /******************************************/
- 215:main.c        ****     /*     Read Control Register 1 again      */
- 216:main.c        ****     /******************************************/
- 217:main.c        **** 
- 218:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 273              		.loc 1 218 0
- 274 0144 0DF10102 		add	r2, sp, #1
- 275 0148 2021     		movs	r1, #32
- 276 014a 1820     		movs	r0, #24
- 277 014c FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 278              	.LVL52:
- 219:main.c        ****                                         LIS3DH_CTRL_REG1,
- 220:main.c        ****                                         &ctrl_reg1);
- 221:main.c        ****     
- 222:main.c        ****     if (error == NO_ERROR)
- 279              		.loc 1 222 0
- 280 0150 48B9     		cbnz	r0, .L17
- 223:main.c        ****     {
- 224:main.c        ****         sprintf(message, "CONTROL REGISTER 1 after overwrite operation: 0x%02X\r\n", ctrl_reg1);
- 281              		.loc 1 224 0
- 282 0152 9DF80120 		ldrb	r2, [sp, #1]	@ zero_extendqisi2
- 283 0156 1D49     		ldr	r1, .L22+56
- 284 0158 01A8     		add	r0, sp, #4
- 285              	.LVL53:
- 286 015a FFF7FEFF 		bl	sprintf
- 287              	.LVL54:
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 10
+ 245              		.loc 1 210 0
+ 246 011e A023     		movs	r3, #160
+ 247 0120 8DF81030 		strb	r3, [sp, #16]
+ 211:main.c        ****     OutArray[7] = footer;
+ 248              		.loc 1 211 0
+ 249 0124 C023     		movs	r3, #192
+ 250 0126 8DF81730 		strb	r3, [sp, #23]
+ 251              	.L15:
+ 212:main.c        ****     
+ 213:main.c        ****    
+ 214:main.c        ****     for(;;)
+ 215:main.c        ****     {
+ 216:main.c        ****          //CyDelay(10);  
+ 217:main.c        ****         //Reading of the status register
+ 218:main.c        ****          error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 252              		.loc 1 218 0
+ 253 012a 0DF10702 		add	r2, sp, #7
+ 254 012e 2721     		movs	r1, #39
+ 255 0130 1820     		movs	r0, #24
+ 256 0132 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 257              	.LVL45:
+ 219:main.c        ****                                              LIS3DH_STATUS_REG,
+ 220:main.c        ****                                              &status_register);
+ 221:main.c        ****         
+ 222:main.c        ****         if(error==NO_ERROR) 
+ 258              		.loc 1 222 0
+ 259 0136 0028     		cmp	r0, #0
+ 260 0138 F7D1     		bne	.L15
+ 223:main.c        ****         { 
+ 224:main.c        ****            //Checking if ZYXDA is set to 1. If in this condition that means that a new set of data 
+ 225:main.c        ****          if((status_register & 1<<3) == 8)
+ 261              		.loc 1 225 0
+ 262 013a 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 263 013e 13F0080F 		tst	r3, #8
+ 264 0142 F2D0     		beq	.L15
+ 226:main.c        ****          { 
+ 227:main.c        ****             //Checking if ZYXOR is set to 1. In that case a new set of data is overwritten to the p
+ 228:main.c        ****             if ((status_register & 1<<7) == 128)
+ 265              		.loc 1 228 0
+ 266 0144 13F0800F 		tst	r3, #128
+ 267 0148 EFD0     		beq	.L15
+ 229:main.c        ****             {
+ 230:main.c        ****              //It is used a multiread function because the registers are consecutive.
+ 231:main.c        ****               error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+ 268              		.loc 1 231 0
+ 269 014a 02AB     		add	r3, sp, #8
+ 270 014c 0622     		movs	r2, #6
+ 271 014e 2821     		movs	r1, #40
+ 272 0150 1820     		movs	r0, #24
+ 273              	.LVL46:
+ 274 0152 FFF7FEFF 		bl	I2C_Peripheral_ReadRegisterMulti
+ 275              	.LVL47:
+ 232:main.c        ****                                                        LIS3DH_OUT_X_L,
+ 233:main.c        ****                                                        6,
+ 234:main.c        ****                                                        &AccData[0]);
+ 235:main.c        ****         
+ 236:main.c        ****             if (error==NO_ERROR)
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 10
 
 
- 225:main.c        ****         UART_Debug_PutString(message); 
- 288              		.loc 1 225 0
- 289 015e 01A8     		add	r0, sp, #4
- 290 0160 FFF7FEFF 		bl	UART_Debug_PutString
- 291              	.LVL55:
- 292 0164 02E0     		b	.L18
- 293              	.LVL56:
- 294              	.L17:
- 226:main.c        ****     }
- 227:main.c        ****     else
- 228:main.c        ****     {
- 229:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
- 295              		.loc 1 229 0
- 296 0166 1148     		ldr	r0, .L22+24
- 297              	.LVL57:
- 298 0168 FFF7FEFF 		bl	UART_Debug_PutString
- 299              	.LVL58:
- 300              	.L18:
- 230:main.c        ****     }
- 231:main.c        ****     
- 232:main.c        ****     /******************************************/
- 233:main.c        ****     /*     Read Control Register 4 again      */
- 234:main.c        ****     /******************************************/
- 235:main.c        **** 
- 236:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 301              		.loc 1 236 0
- 302 016c 6A46     		mov	r2, sp
- 303 016e 2321     		movs	r1, #35
- 304 0170 1820     		movs	r0, #24
- 305 0172 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 306              	.LVL59:
- 237:main.c        ****                                         LIS3DH_CTRL_REG4,
- 238:main.c        ****                                         &ctrl_reg4);
- 239:main.c        ****     
- 240:main.c        ****     if (error == NO_ERROR)
- 307              		.loc 1 240 0
- 308 0176 48B9     		cbnz	r0, .L19
- 241:main.c        ****     {
- 242:main.c        ****         sprintf(message, "CONTROL REGISTER 4 after overwrite operation: 0x%02X\r\n", ctrl_reg4);
- 309              		.loc 1 242 0
- 310 0178 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
- 311 017c 1449     		ldr	r1, .L22+60
- 312 017e 01A8     		add	r0, sp, #4
- 313              	.LVL60:
- 314 0180 FFF7FEFF 		bl	sprintf
- 315              	.LVL61:
- 243:main.c        ****         UART_Debug_PutString(message); 
- 316              		.loc 1 243 0
- 317 0184 01A8     		add	r0, sp, #4
- 318 0186 FFF7FEFF 		bl	UART_Debug_PutString
- 319              	.LVL62:
- 320 018a 02E0     		b	.L20
- 321              	.LVL63:
- 322              	.L19:
- 244:main.c        ****     }
- 245:main.c        ****     else
- 246:main.c        ****     {
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 11
+ 276              		.loc 1 236 0
+ 277 0156 0028     		cmp	r0, #0
+ 278 0158 E7D1     		bne	.L15
+ 237:main.c        ****               {    
+ 238:main.c        ****                 OutX = (int16)((AccData[0] | (AccData[1]<<8)))>>4;
+ 279              		.loc 1 238 0
+ 280 015a 9DF80830 		ldrb	r3, [sp, #8]	@ zero_extendqisi2
+ 281 015e 9DF80920 		ldrb	r2, [sp, #9]	@ zero_extendqisi2
+ 282 0162 43EA0223 		orr	r3, r3, r2, lsl #8
+ 283 0166 43F30B13 		sbfx	r3, r3, #4, #12
+ 284              	.LVL48:
+ 239:main.c        ****                 OutX = (OutX*2); //Operation needed because the sensitity is of 2 mg/digit
+ 285              		.loc 1 239 0
+ 286 016a 5B00     		lsls	r3, r3, #1
+ 287              	.LVL49:
+ 288 016c 9BB2     		uxth	r3, r3
+ 289              	.LVL50:
+ 240:main.c        ****                 OutArray[1] = (uint8_t)(OutX & 0xFF);
+ 290              		.loc 1 240 0
+ 291 016e 8DF81130 		strb	r3, [sp, #17]
+ 241:main.c        ****                 OutArray[2] = (uint8_t)(OutX >> 8);
+ 292              		.loc 1 241 0
+ 293 0172 1B0A     		lsrs	r3, r3, #8
+ 294              	.LVL51:
+ 295 0174 8DF81230 		strb	r3, [sp, #18]
+ 242:main.c        ****             
+ 243:main.c        ****             
+ 244:main.c        ****                 OutY = (int16)((AccData[2] | (AccData[3]<<8)))>>4;
+ 296              		.loc 1 244 0
+ 297 0178 9DF80A30 		ldrb	r3, [sp, #10]	@ zero_extendqisi2
+ 298 017c 9DF80B20 		ldrb	r2, [sp, #11]	@ zero_extendqisi2
+ 299              	.LVL52:
+ 300 0180 43EA0223 		orr	r3, r3, r2, lsl #8
+ 301 0184 43F30B13 		sbfx	r3, r3, #4, #12
+ 302              	.LVL53:
+ 245:main.c        ****                 OutY = (OutY*2); //Operation needed because the sensitity is of 2 mg/digit
+ 303              		.loc 1 245 0
+ 304 0188 5B00     		lsls	r3, r3, #1
+ 305              	.LVL54:
+ 306 018a 9BB2     		uxth	r3, r3
+ 307              	.LVL55:
+ 246:main.c        ****                 OutArray[3] = (uint8_t)(OutY & 0xFF);
+ 308              		.loc 1 246 0
+ 309 018c 8DF81330 		strb	r3, [sp, #19]
+ 247:main.c        ****                 OutArray[4] = (uint8_t)(OutY >> 8);
+ 310              		.loc 1 247 0
+ 311 0190 1B0A     		lsrs	r3, r3, #8
+ 312              	.LVL56:
+ 313 0192 8DF81430 		strb	r3, [sp, #20]
+ 248:main.c        ****             
+ 249:main.c        ****             
+ 250:main.c        ****                 OutZ = (int16)((AccData[4] | (AccData[5]<<8)))>>4;
+ 314              		.loc 1 250 0
+ 315 0196 9DF80C30 		ldrb	r3, [sp, #12]	@ zero_extendqisi2
+ 316 019a 9DF80D20 		ldrb	r2, [sp, #13]	@ zero_extendqisi2
+ 317              	.LVL57:
+ 318 019e 43EA0223 		orr	r3, r3, r2, lsl #8
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 11
 
 
- 247:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 4\r\n");   
- 323              		.loc 1 247 0
- 324 018c 0948     		ldr	r0, .L22+32
- 325              	.LVL64:
- 326 018e FFF7FEFF 		bl	UART_Debug_PutString
- 327              	.LVL65:
- 328              	.L20:
- 329 0192 FEE7     		b	.L20
- 330              	.L23:
- 331              		.align	2
- 332              	.L22:
- 333 0194 00000000 		.word	.LC0
- 334 0198 20000000 		.word	.LC1
- 335 019c 48000000 		.word	.LC2
- 336 01a0 6C000000 		.word	.LC3
- 337 01a4 88000000 		.word	.LC4
- 338 01a8 C4000000 		.word	.LC5
- 339 01ac E4000000 		.word	.LC6
- 340 01b0 20010000 		.word	.LC7
- 341 01b4 40010000 		.word	.LC8
- 342 01b8 7C010000 		.word	.LC9
- 343 01bc 98010000 		.word	.LC10
- 344 01c0 D0010000 		.word	.LC11
- 345 01c4 0C020000 		.word	.LC12
- 346 01c8 44020000 		.word	.LC13
- 347 01cc 80020000 		.word	.LC14
- 348 01d0 B8020000 		.word	.LC15
- 349              		.cfi_endproc
- 350              	.LFE64:
- 351              		.size	main, .-main
- 352              		.section	.rodata.str1.4,"aMS",%progbits,1
- 353              		.align	2
- 354              	.LC0:
- 355 0000 44657669 		.ascii	"Device 0x%02X is connected\015\012\000"
- 355      63652030 
- 355      78253032 
- 355      58206973 
- 355      20636F6E 
- 356 001d 000000   		.space	3
- 357              	.LC1:
- 358 0020 57484F20 		.ascii	"WHO AM I REG: 0x%02X [Expected: 0x33]\015\012\000"
- 358      414D2049 
- 358      20524547 
- 358      3A203078 
- 358      25303258 
- 359              	.LC2:
- 360 0048 4572726F 		.ascii	"Error occurred during I2C comm\015\012\000"
- 360      72206F63 
- 360      63757272 
- 360      65642064 
- 360      7572696E 
- 361 0069 000000   		.space	3
- 362              	.LC3:
- 363 006c 53544154 		.ascii	"STATUS REGISTER: 0x%02X\015\012\000"
- 363      55532052 
- 363      45474953 
- 363      5445523A 
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 12
+ 319 01a2 43F30B13 		sbfx	r3, r3, #4, #12
+ 320              	.LVL58:
+ 251:main.c        ****                 OutZ = (OutZ*2); //Operation needed because the sensitity is of 2 mg/digit
+ 321              		.loc 1 251 0
+ 322 01a6 5B00     		lsls	r3, r3, #1
+ 323              	.LVL59:
+ 324 01a8 9BB2     		uxth	r3, r3
+ 325              	.LVL60:
+ 252:main.c        ****             
+ 253:main.c        ****                 OutArray[5] = (uint8_t)(OutZ & 0xFF);
+ 326              		.loc 1 253 0
+ 327 01aa 8DF81530 		strb	r3, [sp, #21]
+ 254:main.c        ****                 OutArray[6] = (uint8_t)(OutZ >> 8);
+ 328              		.loc 1 254 0
+ 329 01ae 1B0A     		lsrs	r3, r3, #8
+ 330              	.LVL61:
+ 331 01b0 8DF81630 		strb	r3, [sp, #22]
+ 255:main.c        ****                 
+ 256:main.c        ****                 UART_Debug_PutArray(OutArray, 8);
+ 332              		.loc 1 256 0
+ 333 01b4 0821     		movs	r1, #8
+ 334 01b6 04A8     		add	r0, sp, #16
+ 335              	.LVL62:
+ 336 01b8 FFF7FEFF 		bl	UART_Debug_PutArray
+ 337              	.LVL63:
+ 338 01bc B5E7     		b	.L15
+ 339              	.L19:
+ 340 01be 00BF     		.align	2
+ 341              	.L18:
+ 342 01c0 00000000 		.word	.LC0
+ 343 01c4 20000000 		.word	.LC1
+ 344 01c8 48000000 		.word	.LC2
+ 345 01cc 6C000000 		.word	.LC3
+ 346 01d0 8C000000 		.word	.LC4
+ 347 01d4 C8000000 		.word	.LC5
+ 348 01d8 E8000000 		.word	.LC6
+ 349 01dc 24010000 		.word	.LC7
+ 350 01e0 40010000 		.word	.LC8
+ 351 01e4 78010000 		.word	.LC9
+ 352 01e8 B4010000 		.word	.LC10
+ 353 01ec EC010000 		.word	.LC11
+ 354              		.cfi_endproc
+ 355              	.LFE64:
+ 356              		.size	main, .-main
+ 357              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 358              		.align	2
+ 359              	.LC0:
+ 360 0000 44657669 		.ascii	"Device 0x%02X is connected\015\012\000"
+ 360      63652030 
+ 360      78253032 
+ 360      58206973 
+ 360      20636F6E 
+ 361 001d 000000   		.space	3
+ 362              	.LC1:
+ 363 0020 57484F20 		.ascii	"WHO AM I REG: 0x%02X [Expected: 0x33]\015\012\000"
+ 363      414D2049 
+ 363      20524547 
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 12
 
 
- 363      20307825 
- 364 0086 0000     		.space	2
- 365              	.LC4:
- 366 0088 4572726F 		.ascii	"Error occurred during I2C comm to read status regis"
- 366      72206F63 
- 366      63757272 
- 366      65642064 
- 366      7572696E 
- 367 00bb 7465720D 		.ascii	"ter\015\012\000"
- 367      0A00
- 368 00c1 000000   		.space	3
- 369              	.LC5:
- 370 00c4 434F4E54 		.ascii	"CONTROL REGISTER 1: 0x%02X\015\012\000"
- 370      524F4C20 
- 370      52454749 
- 370      53544552 
- 370      20313A20 
- 371 00e1 000000   		.space	3
- 372              	.LC6:
- 373 00e4 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
- 373      72206F63 
- 373      63757272 
- 373      65642064 
- 373      7572696E 
- 374 0117 73746572 		.ascii	"ster 1\015\012\000"
- 374      20310D0A 
- 374      00
- 375              	.LC7:
- 376 0120 434F4E54 		.ascii	"CONTROL REGISTER 4: 0x%02X\015\012\000"
- 376      524F4C20 
- 376      52454749 
- 376      53544552 
- 376      20343A20 
- 377 013d 000000   		.space	3
- 378              	.LC8:
- 379 0140 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
- 379      72206F63 
- 379      63757272 
- 379      65642064 
- 379      7572696E 
- 380 0173 73746572 		.ascii	"ster 4\015\012\000"
- 380      20340D0A 
- 380      00
- 381              	.LC9:
- 382 017c 0D0A5772 		.ascii	"\015\012Writing new values..\015\012\000"
- 382      6974696E 
- 382      67206E65 
- 382      77207661 
- 382      6C756573 
- 383 0195 000000   		.space	3
- 384              	.LC10:
- 385 0198 434F4E54 		.ascii	"CONTROL REGISTER 1 successfully written as: 0x%02X\015"
- 385      524F4C20 
- 385      52454749 
- 385      53544552 
- 385      20312073 
- 386 01cb 0A00     		.ascii	"\012\000"
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 13
+ 363      3A203078 
+ 363      25303258 
+ 364              	.LC2:
+ 365 0048 4572726F 		.ascii	"Error occurred during I2C comm\015\012\000"
+ 365      72206F63 
+ 365      63757272 
+ 365      65642064 
+ 365      7572696E 
+ 366 0069 000000   		.space	3
+ 367              	.LC3:
+ 368 006c 434F4E54 		.ascii	"CONTROL REGISTER 1: 0x%02X\015\012\000"
+ 368      524F4C20 
+ 368      52454749 
+ 368      53544552 
+ 368      20313A20 
+ 369 0089 000000   		.space	3
+ 370              	.LC4:
+ 371 008c 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
+ 371      72206F63 
+ 371      63757272 
+ 371      65642064 
+ 371      7572696E 
+ 372 00bf 73746572 		.ascii	"ster 1\015\012\000"
+ 372      20310D0A 
+ 372      00
+ 373              	.LC5:
+ 374 00c8 434F4E54 		.ascii	"CONTROL REGISTER 4: 0x%02X\015\012\000"
+ 374      524F4C20 
+ 374      52454749 
+ 374      53544552 
+ 374      20343A20 
+ 375 00e5 000000   		.space	3
+ 376              	.LC6:
+ 377 00e8 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
+ 377      72206F63 
+ 377      63757272 
+ 377      65642064 
+ 377      7572696E 
+ 378 011b 73746572 		.ascii	"ster 4\015\012\000"
+ 378      20340D0A 
+ 378      00
+ 379              	.LC7:
+ 380 0124 0D0A5772 		.ascii	"\015\012Writing new values..\015\012\000"
+ 380      6974696E 
+ 380      67206E65 
+ 380      77207661 
+ 380      6C756573 
+ 381 013d 000000   		.space	3
+ 382              	.LC8:
+ 383 0140 434F4E54 		.ascii	"CONTROL REGISTER 1 successfully written as: 0x%02X\015"
+ 383      524F4C20 
+ 383      52454749 
+ 383      53544552 
+ 383      20312073 
+ 384 0173 0A00     		.ascii	"\012\000"
+ 385 0175 000000   		.space	3
+ 386              	.LC9:
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 13
 
 
- 387 01cd 000000   		.space	3
- 388              	.LC11:
- 389 01d0 4572726F 		.ascii	"Error occurred during I2C comm to set control regis"
- 389      72206F63 
- 389      63757272 
- 389      65642064 
- 389      7572696E 
- 390 0203 74657220 		.ascii	"ter 1\015\012\000"
- 390      310D0A00 
- 391 020b 00       		.space	1
- 392              	.LC12:
- 393 020c 434F4E54 		.ascii	"CONTROL REGISTER 4 successfully written as: 0x%02X\015"
- 393      524F4C20 
- 393      52454749 
- 393      53544552 
- 393      20342073 
- 394 023f 0A00     		.ascii	"\012\000"
- 395 0241 000000   		.space	3
- 396              	.LC13:
- 397 0244 4572726F 		.ascii	"Error occurred during I2C comm to set control regis"
- 397      72206F63 
- 397      63757272 
- 397      65642064 
- 397      7572696E 
- 398 0277 74657220 		.ascii	"ter 4\015\012\000"
- 398      340D0A00 
- 399 027f 00       		.space	1
- 400              	.LC14:
- 401 0280 434F4E54 		.ascii	"CONTROL REGISTER 1 after overwrite operation: 0x%02"
- 401      524F4C20 
- 401      52454749 
- 401      53544552 
- 401      20312061 
- 402 02b3 580D0A00 		.ascii	"X\015\012\000"
- 403 02b7 00       		.space	1
- 404              	.LC15:
- 405 02b8 434F4E54 		.ascii	"CONTROL REGISTER 4 after overwrite operation: 0x%02"
- 405      524F4C20 
- 405      52454749 
- 405      53544552 
- 405      20342061 
- 406 02eb 580D0A00 		.ascii	"X\015\012\000"
- 407              		.text
- 408              	.Letext0:
- 409              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 410              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 411              		.file 4 "ErrorCodes.h"
- 412              		.file 5 "I2C_Interface.h"
- 413              		.file 6 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 414              		.file 7 "Generated_Source\\PSoC5/UART_Debug.h"
- 415              		.file 8 "Generated_Source\\PSoC5/CyLib.h"
- 416              		.file 9 "Generated_Source\\PSoC5/core_cm3.h"
- 417              		.section	.debug_info,"",%progbits
- 418              	.Ldebug_info0:
- 419 0000 AA050000 		.4byte	0x5aa
- 420 0004 0400     		.2byte	0x4
- 421 0006 00000000 		.4byte	.Ldebug_abbrev0
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 14
+ 387 0178 4572726F 		.ascii	"Error occurred during I2C comm to set control regis"
+ 387      72206F63 
+ 387      63757272 
+ 387      65642064 
+ 387      7572696E 
+ 388 01ab 74657220 		.ascii	"ter 1\015\012\000"
+ 388      310D0A00 
+ 389 01b3 00       		.space	1
+ 390              	.LC10:
+ 391 01b4 434F4E54 		.ascii	"CONTROL REGISTER 4 successfully written as: 0x%02X\015"
+ 391      524F4C20 
+ 391      52454749 
+ 391      53544552 
+ 391      20342073 
+ 392 01e7 0A00     		.ascii	"\012\000"
+ 393 01e9 000000   		.space	3
+ 394              	.LC11:
+ 395 01ec 4572726F 		.ascii	"Error occurred during I2C comm to set control regis"
+ 395      72206F63 
+ 395      63757272 
+ 395      65642064 
+ 395      7572696E 
+ 396 021f 74657220 		.ascii	"ter 4\015\012\000"
+ 396      340D0A00 
+ 397              		.text
+ 398              	.Letext0:
+ 399              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 400              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 401              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 402              		.file 5 "ErrorCodes.h"
+ 403              		.file 6 "I2C_Interface.h"
+ 404              		.file 7 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 405              		.file 8 "Generated_Source\\PSoC5/UART_Debug.h"
+ 406              		.file 9 "Generated_Source\\PSoC5/CyLib.h"
+ 407              		.file 10 "Generated_Source\\PSoC5/core_cm3.h"
+ 408              		.section	.debug_info,"",%progbits
+ 409              	.Ldebug_info0:
+ 410 0000 91050000 		.4byte	0x591
+ 411 0004 0400     		.2byte	0x4
+ 412 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 413 000a 04       		.byte	0x4
+ 414 000b 01       		.uleb128 0x1
+ 415 000c E1000000 		.4byte	.LASF47
+ 416 0010 0C       		.byte	0xc
+ 417 0011 8F020000 		.4byte	.LASF48
+ 418 0015 0F000000 		.4byte	.LASF49
+ 419 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 420 001d 00000000 		.4byte	0
+ 421 0021 00000000 		.4byte	.Ldebug_line0
+ 422 0025 02       		.uleb128 0x2
+ 423 0026 01       		.byte	0x1
+ 424 0027 06       		.byte	0x6
+ 425 0028 EC020000 		.4byte	.LASF0
+ 426 002c 03       		.uleb128 0x3
+ 427 002d 60000000 		.4byte	.LASF2
+ 428 0031 02       		.byte	0x2
+ 429 0032 1D       		.byte	0x1d
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 14
 
 
- 422 000a 04       		.byte	0x4
- 423 000b 01       		.uleb128 0x1
- 424 000c A0000000 		.4byte	.LASF35
- 425 0010 0C       		.byte	0xc
- 426 0011 24020000 		.4byte	.LASF36
- 427 0015 12000000 		.4byte	.LASF37
- 428 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 429 001d 00000000 		.4byte	0
- 430 0021 00000000 		.4byte	.Ldebug_line0
- 431 0025 02       		.uleb128 0x2
- 432 0026 01       		.byte	0x1
- 433 0027 06       		.byte	0x6
- 434 0028 71020000 		.4byte	.LASF0
- 435 002c 03       		.uleb128 0x3
- 436 002d 08000000 		.4byte	.LASF4
- 437 0031 02       		.byte	0x2
- 438 0032 1D       		.byte	0x1d
- 439 0033 37000000 		.4byte	0x37
- 440 0037 02       		.uleb128 0x2
- 441 0038 01       		.byte	0x1
- 442 0039 08       		.byte	0x8
- 443 003a 92000000 		.4byte	.LASF1
- 444 003e 02       		.uleb128 0x2
- 445 003f 02       		.byte	0x2
- 446 0040 05       		.byte	0x5
- 447 0041 4C020000 		.4byte	.LASF2
- 448 0045 02       		.uleb128 0x2
- 449 0046 02       		.byte	0x2
- 450 0047 07       		.byte	0x7
- 451 0048 40010000 		.4byte	.LASF3
- 452 004c 03       		.uleb128 0x3
- 453 004d 6F000000 		.4byte	.LASF5
- 454 0051 02       		.byte	0x2
- 455 0052 3F       		.byte	0x3f
- 456 0053 57000000 		.4byte	0x57
- 457 0057 02       		.uleb128 0x2
- 458 0058 04       		.byte	0x4
- 459 0059 05       		.byte	0x5
- 460 005a 79000000 		.4byte	.LASF6
- 461 005e 02       		.uleb128 0x2
- 462 005f 04       		.byte	0x4
- 463 0060 07       		.byte	0x7
- 464 0061 2E010000 		.4byte	.LASF7
- 465 0065 02       		.uleb128 0x2
- 466 0066 08       		.byte	0x8
- 467 0067 05       		.byte	0x5
- 468 0068 05020000 		.4byte	.LASF8
- 469 006c 02       		.uleb128 0x2
- 470 006d 08       		.byte	0x8
- 471 006e 07       		.byte	0x7
- 472 006f BF010000 		.4byte	.LASF9
- 473 0073 04       		.uleb128 0x4
- 474 0074 04       		.byte	0x4
- 475 0075 05       		.byte	0x5
- 476 0076 696E7400 		.ascii	"int\000"
- 477 007a 02       		.uleb128 0x2
- 478 007b 04       		.byte	0x4
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 15
+ 430 0033 37000000 		.4byte	0x37
+ 431 0037 02       		.uleb128 0x2
+ 432 0038 01       		.byte	0x1
+ 433 0039 08       		.byte	0x8
+ 434 003a D3000000 		.4byte	.LASF1
+ 435 003e 03       		.uleb128 0x3
+ 436 003f F3010000 		.4byte	.LASF3
+ 437 0043 02       		.byte	0x2
+ 438 0044 29       		.byte	0x29
+ 439 0045 49000000 		.4byte	0x49
+ 440 0049 02       		.uleb128 0x2
+ 441 004a 02       		.byte	0x2
+ 442 004b 05       		.byte	0x5
+ 443 004c B7020000 		.4byte	.LASF4
+ 444 0050 02       		.uleb128 0x2
+ 445 0051 02       		.byte	0x2
+ 446 0052 07       		.byte	0x7
+ 447 0053 87010000 		.4byte	.LASF5
+ 448 0057 03       		.uleb128 0x3
+ 449 0058 8B000000 		.4byte	.LASF6
+ 450 005c 02       		.byte	0x2
+ 451 005d 3F       		.byte	0x3f
+ 452 005e 62000000 		.4byte	0x62
+ 453 0062 02       		.uleb128 0x2
+ 454 0063 04       		.byte	0x4
+ 455 0064 05       		.byte	0x5
+ 456 0065 95000000 		.4byte	.LASF7
+ 457 0069 02       		.uleb128 0x2
+ 458 006a 04       		.byte	0x4
+ 459 006b 07       		.byte	0x7
+ 460 006c 75010000 		.4byte	.LASF8
+ 461 0070 02       		.uleb128 0x2
+ 462 0071 08       		.byte	0x8
+ 463 0072 05       		.byte	0x5
+ 464 0073 70020000 		.4byte	.LASF9
+ 465 0077 02       		.uleb128 0x2
+ 466 0078 08       		.byte	0x8
+ 467 0079 07       		.byte	0x7
+ 468 007a 1E020000 		.4byte	.LASF10
+ 469 007e 04       		.uleb128 0x4
+ 470 007f 04       		.byte	0x4
+ 471 0080 05       		.byte	0x5
+ 472 0081 696E7400 		.ascii	"int\000"
+ 473 0085 02       		.uleb128 0x2
+ 474 0086 04       		.byte	0x4
+ 475 0087 07       		.byte	0x7
+ 476 0088 11020000 		.4byte	.LASF11
+ 477 008c 03       		.uleb128 0x3
+ 478 008d 35020000 		.4byte	.LASF12
+ 479 0091 03       		.byte	0x3
+ 480 0092 18       		.byte	0x18
+ 481 0093 2C000000 		.4byte	0x2c
+ 482 0097 03       		.uleb128 0x3
+ 483 0098 3D020000 		.4byte	.LASF13
+ 484 009c 03       		.byte	0x3
+ 485 009d 20       		.byte	0x20
+ 486 009e 3E000000 		.4byte	0x3e
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 15
 
 
- 479 007c 07       		.byte	0x7
- 480 007d B2010000 		.4byte	.LASF10
- 481 0081 03       		.uleb128 0x3
- 482 0082 D6010000 		.4byte	.LASF11
- 483 0086 03       		.byte	0x3
- 484 0087 18       		.byte	0x18
- 485 0088 2C000000 		.4byte	0x2c
- 486 008c 03       		.uleb128 0x3
- 487 008d EE010000 		.4byte	.LASF12
- 488 0091 03       		.byte	0x3
- 489 0092 2C       		.byte	0x2c
- 490 0093 4C000000 		.4byte	0x4c
- 491 0097 02       		.uleb128 0x2
- 492 0098 04       		.byte	0x4
- 493 0099 04       		.byte	0x4
- 494 009a 8C000000 		.4byte	.LASF13
- 495 009e 02       		.uleb128 0x2
- 496 009f 08       		.byte	0x8
- 497 00a0 04       		.byte	0x4
- 498 00a1 60010000 		.4byte	.LASF14
- 499 00a5 02       		.uleb128 0x2
- 500 00a6 01       		.byte	0x1
- 501 00a7 08       		.byte	0x8
- 502 00a8 2B020000 		.4byte	.LASF15
- 503 00ac 05       		.uleb128 0x5
- 504 00ad 01       		.byte	0x1
- 505 00ae 37000000 		.4byte	0x37
- 506 00b2 04       		.byte	0x4
- 507 00b3 15       		.byte	0x15
- 508 00b4 C5000000 		.4byte	0xc5
- 509 00b8 06       		.uleb128 0x6
- 510 00b9 56020000 		.4byte	.LASF16
- 511 00bd 00       		.byte	0
- 512 00be 06       		.uleb128 0x6
- 513 00bf 5F020000 		.4byte	.LASF17
- 514 00c3 01       		.byte	0x1
- 515 00c4 00       		.byte	0
- 516 00c5 03       		.uleb128 0x3
- 517 00c6 82000000 		.4byte	.LASF18
- 518 00ca 04       		.byte	0x4
- 519 00cb 18       		.byte	0x18
- 520 00cc AC000000 		.4byte	0xac
- 521 00d0 02       		.uleb128 0x2
- 522 00d1 08       		.byte	0x8
- 523 00d2 04       		.byte	0x4
- 524 00d3 65020000 		.4byte	.LASF19
- 525 00d7 02       		.uleb128 0x2
- 526 00d8 04       		.byte	0x4
- 527 00d9 07       		.byte	0x7
- 528 00da F6010000 		.4byte	.LASF20
- 529 00de 07       		.uleb128 0x7
- 530 00df 99010000 		.4byte	.LASF38
- 531 00e3 01       		.byte	0x1
- 532 00e4 44       		.byte	0x44
- 533 00e5 73000000 		.4byte	0x73
- 534 00e9 00000000 		.4byte	.LFB64
- 535 00ed D4010000 		.4byte	.LFE64-.LFB64
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 16
+ 487 00a2 03       		.uleb128 0x3
+ 488 00a3 BC000000 		.4byte	.LASF14
+ 489 00a7 03       		.byte	0x3
+ 490 00a8 2C       		.byte	0x2c
+ 491 00a9 57000000 		.4byte	0x57
+ 492 00ad 05       		.uleb128 0x5
+ 493 00ae 6F010000 		.4byte	.LASF15
+ 494 00b2 04       		.byte	0x4
+ 495 00b3 E801     		.2byte	0x1e8
+ 496 00b5 49000000 		.4byte	0x49
+ 497 00b9 02       		.uleb128 0x2
+ 498 00ba 04       		.byte	0x4
+ 499 00bb 04       		.byte	0x4
+ 500 00bc C4000000 		.4byte	.LASF16
+ 501 00c0 02       		.uleb128 0x2
+ 502 00c1 08       		.byte	0x8
+ 503 00c2 04       		.byte	0x4
+ 504 00c3 A9010000 		.4byte	.LASF17
+ 505 00c7 02       		.uleb128 0x2
+ 506 00c8 01       		.byte	0x1
+ 507 00c9 08       		.byte	0x8
+ 508 00ca 96020000 		.4byte	.LASF18
+ 509 00ce 06       		.uleb128 0x6
+ 510 00cf 01       		.byte	0x1
+ 511 00d0 37000000 		.4byte	0x37
+ 512 00d4 05       		.byte	0x5
+ 513 00d5 15       		.byte	0x15
+ 514 00d6 E7000000 		.4byte	0xe7
+ 515 00da 07       		.uleb128 0x7
+ 516 00db C1020000 		.4byte	.LASF19
+ 517 00df 00       		.byte	0
+ 518 00e0 07       		.uleb128 0x7
+ 519 00e1 CA020000 		.4byte	.LASF20
+ 520 00e5 01       		.byte	0x1
+ 521 00e6 00       		.byte	0
+ 522 00e7 03       		.uleb128 0x3
+ 523 00e8 B2000000 		.4byte	.LASF21
+ 524 00ec 05       		.byte	0x5
+ 525 00ed 18       		.byte	0x18
+ 526 00ee CE000000 		.4byte	0xce
+ 527 00f2 02       		.uleb128 0x2
+ 528 00f3 08       		.byte	0x8
+ 529 00f4 04       		.byte	0x4
+ 530 00f5 E0020000 		.4byte	.LASF22
+ 531 00f9 02       		.uleb128 0x2
+ 532 00fa 04       		.byte	0x4
+ 533 00fb 07       		.byte	0x7
+ 534 00fc 61020000 		.4byte	.LASF23
+ 535 0100 08       		.uleb128 0x8
+ 536 0101 EE010000 		.4byte	.LASF50
+ 537 0105 01       		.byte	0x1
+ 538 0106 45       		.byte	0x45
+ 539 0107 7E000000 		.4byte	0x7e
+ 540 010b 00000000 		.4byte	.LFB64
+ 541 010f F0010000 		.4byte	.LFE64-.LFB64
+ 542 0113 01       		.uleb128 0x1
+ 543 0114 9C       		.byte	0x9c
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 16
 
 
- 536 00f1 01       		.uleb128 0x1
- 537 00f2 9C       		.byte	0x9c
- 538 00f3 34050000 		.4byte	0x534
- 539 00f7 08       		.uleb128 0x8
- 540 00f8 00000000 		.4byte	.LASF21
- 541 00fc 01       		.byte	0x1
- 542 00fd 4F       		.byte	0x4f
- 543 00fe 34050000 		.4byte	0x534
- 544 0102 02       		.uleb128 0x2
- 545 0103 91       		.byte	0x91
- 546 0104 44       		.sleb128 -60
- 547 0105 08       		.uleb128 0x8
- 548 0106 7D020000 		.4byte	.LASF22
- 549 010a 01       		.byte	0x1
- 550 010b 62       		.byte	0x62
- 551 010c 81000000 		.4byte	0x81
- 552 0110 02       		.uleb128 0x2
- 553 0111 91       		.byte	0x91
- 554 0112 43       		.sleb128 -61
- 555 0113 09       		.uleb128 0x9
- 556 0114 FF010000 		.4byte	.LASF23
- 557 0118 01       		.byte	0x1
- 558 0119 63       		.byte	0x63
- 559 011a C5000000 		.4byte	0xc5
- 560 011e 00000000 		.4byte	.LLST0
- 561 0122 08       		.uleb128 0x8
- 562 0123 DE010000 		.4byte	.LASF24
- 563 0127 01       		.byte	0x1
- 564 0128 74       		.byte	0x74
- 565 0129 81000000 		.4byte	0x81
- 566 012d 02       		.uleb128 0x2
- 567 012e 91       		.byte	0x91
- 568 012f 42       		.sleb128 -62
- 569 0130 08       		.uleb128 0x8
- 570 0131 9E010000 		.4byte	.LASF25
- 571 0135 01       		.byte	0x1
- 572 0136 86       		.byte	0x86
- 573 0137 81000000 		.4byte	0x81
- 574 013b 02       		.uleb128 0x2
- 575 013c 91       		.byte	0x91
- 576 013d 41       		.sleb128 -63
- 577 013e 08       		.uleb128 0x8
- 578 013f A8010000 		.4byte	.LASF26
- 579 0143 01       		.byte	0x1
- 580 0144 98       		.byte	0x98
- 581 0145 81000000 		.4byte	0x81
- 582 0149 02       		.uleb128 0x2
- 583 014a 91       		.byte	0x91
- 584 014b 40       		.sleb128 -64
- 585 014c 0A       		.uleb128 0xa
- 586 014d 14000000 		.4byte	.LBB2
- 587 0151 22000000 		.4byte	.LBE2-.LBB2
- 588 0155 AE010000 		.4byte	0x1ae
- 589 0159 0B       		.uleb128 0xb
- 590 015a 6900     		.ascii	"i\000"
- 591 015c 01       		.byte	0x1
- 592 015d 52       		.byte	0x52
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 17
+ 544 0115 E5040000 		.4byte	0x4e5
+ 545 0119 09       		.uleb128 0x9
+ 546 011a 00000000 		.4byte	.LASF24
+ 547 011e 01       		.byte	0x1
+ 548 011f 50       		.byte	0x50
+ 549 0120 E5040000 		.4byte	0x4e5
+ 550 0124 02       		.uleb128 0x2
+ 551 0125 91       		.byte	0x91
+ 552 0126 44       		.sleb128 -60
+ 553 0127 09       		.uleb128 0x9
+ 554 0128 F8020000 		.4byte	.LASF25
+ 555 012c 01       		.byte	0x1
+ 556 012d 63       		.byte	0x63
+ 557 012e 8C000000 		.4byte	0x8c
+ 558 0132 02       		.uleb128 0x2
+ 559 0133 91       		.byte	0x91
+ 560 0134 43       		.sleb128 -61
+ 561 0135 0A       		.uleb128 0xa
+ 562 0136 6A020000 		.4byte	.LASF26
+ 563 013a 01       		.byte	0x1
+ 564 013b 64       		.byte	0x64
+ 565 013c E7000000 		.4byte	0xe7
+ 566 0140 00000000 		.4byte	.LLST0
+ 567 0144 09       		.uleb128 0x9
+ 568 0145 FD010000 		.4byte	.LASF27
+ 569 0149 01       		.byte	0x1
+ 570 014a 76       		.byte	0x76
+ 571 014b 8C000000 		.4byte	0x8c
+ 572 014f 02       		.uleb128 0x2
+ 573 0150 91       		.byte	0x91
+ 574 0151 42       		.sleb128 -62
+ 575 0152 09       		.uleb128 0x9
+ 576 0153 07020000 		.4byte	.LASF28
+ 577 0157 01       		.byte	0x1
+ 578 0158 88       		.byte	0x88
+ 579 0159 8C000000 		.4byte	0x8c
+ 580 015d 02       		.uleb128 0x2
+ 581 015e 91       		.byte	0x91
+ 582 015f 41       		.sleb128 -63
+ 583 0160 0A       		.uleb128 0xa
+ 584 0161 52020000 		.4byte	.LASF29
+ 585 0165 01       		.byte	0x1
+ 586 0166 CB       		.byte	0xcb
+ 587 0167 97000000 		.4byte	0x97
+ 588 016b 8C000000 		.4byte	.LLST1
+ 589 016f 0A       		.uleb128 0xa
+ 590 0170 57020000 		.4byte	.LASF30
+ 591 0174 01       		.byte	0x1
+ 592 0175 CB       		.byte	0xcb
+ 593 0176 97000000 		.4byte	0x97
+ 594 017a 0E010000 		.4byte	.LLST2
+ 595 017e 0A       		.uleb128 0xa
+ 596 017f 5C020000 		.4byte	.LASF31
+ 597 0183 01       		.byte	0x1
+ 598 0184 CB       		.byte	0xcb
+ 599 0185 97000000 		.4byte	0x97
+ 600 0189 90010000 		.4byte	.LLST3
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 17
 
 
- 593 015e 73000000 		.4byte	0x73
- 594 0162 B8000000 		.4byte	.LLST1
- 595 0166 0C       		.uleb128 0xc
- 596 0167 1E000000 		.4byte	.LVL4
- 597 016b 55050000 		.4byte	0x555
- 598 016f 7A010000 		.4byte	0x17a
- 599 0173 0D       		.uleb128 0xd
- 600 0174 01       		.uleb128 0x1
- 601 0175 50       		.byte	0x50
- 602 0176 02       		.uleb128 0x2
- 603 0177 74       		.byte	0x74
- 604 0178 00       		.sleb128 0
- 605 0179 00       		.byte	0
- 606 017a 0C       		.uleb128 0xc
- 607 017b 2A000000 		.4byte	.LVL5
- 608 017f 60050000 		.4byte	0x560
- 609 0183 9D010000 		.4byte	0x19d
- 610 0187 0D       		.uleb128 0xd
- 611 0188 01       		.uleb128 0x1
- 612 0189 50       		.byte	0x50
- 613 018a 02       		.uleb128 0x2
- 614 018b 91       		.byte	0x91
- 615 018c 44       		.sleb128 -60
- 616 018d 0D       		.uleb128 0xd
- 617 018e 01       		.uleb128 0x1
- 618 018f 51       		.byte	0x51
- 619 0190 05       		.uleb128 0x5
- 620 0191 03       		.byte	0x3
- 621 0192 00000000 		.4byte	.LC0
- 622 0196 0D       		.uleb128 0xd
- 623 0197 01       		.uleb128 0x1
- 624 0198 52       		.byte	0x52
- 625 0199 02       		.uleb128 0x2
- 626 019a 74       		.byte	0x74
- 627 019b 00       		.sleb128 0
- 628 019c 00       		.byte	0
- 629 019d 0E       		.uleb128 0xe
- 630 019e 30000000 		.4byte	.LVL6
- 631 01a2 6B050000 		.4byte	0x56b
- 632 01a6 0D       		.uleb128 0xd
- 633 01a7 01       		.uleb128 0x1
- 634 01a8 50       		.byte	0x50
- 635 01a9 02       		.uleb128 0x2
- 636 01aa 91       		.byte	0x91
- 637 01ab 44       		.sleb128 -60
- 638 01ac 00       		.byte	0
- 639 01ad 00       		.byte	0
- 640 01ae 0F       		.uleb128 0xf
- 641 01af 0A000000 		.4byte	.LVL0
- 642 01b3 76050000 		.4byte	0x576
- 643 01b7 0F       		.uleb128 0xf
- 644 01b8 0E000000 		.4byte	.LVL1
- 645 01bc 81050000 		.4byte	0x581
- 646 01c0 0C       		.uleb128 0xc
- 647 01c1 14000000 		.4byte	.LVL2
- 648 01c5 8C050000 		.4byte	0x58c
- 649 01c9 D3010000 		.4byte	0x1d3
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 18
+ 601 018d 0B       		.uleb128 0xb
+ 602 018e 08000000 		.4byte	.LASF32
+ 603 0192 01       		.byte	0x1
+ 604 0193 CC       		.byte	0xcc
+ 605 0194 8C000000 		.4byte	0x8c
+ 606 0198 A07F     		.sleb128 -96
+ 607 019a 0B       		.uleb128 0xb
+ 608 019b 9A010000 		.4byte	.LASF33
+ 609 019f 01       		.byte	0x1
+ 610 01a0 CD       		.byte	0xcd
+ 611 01a1 8C000000 		.4byte	0x8c
+ 612 01a5 40       		.sleb128 -64
+ 613 01a6 09       		.uleb128 0x9
+ 614 01a7 CA000000 		.4byte	.LASF34
+ 615 01ab 01       		.byte	0x1
+ 616 01ac CE       		.byte	0xce
+ 617 01ad F5040000 		.4byte	0x4f5
+ 618 01b1 03       		.uleb128 0x3
+ 619 01b2 91       		.byte	0x91
+ 620 01b3 B87F     		.sleb128 -72
+ 621 01b5 09       		.uleb128 0x9
+ 622 01b6 A1010000 		.4byte	.LASF35
+ 623 01ba 01       		.byte	0x1
+ 624 01bb CF       		.byte	0xcf
+ 625 01bc 05050000 		.4byte	0x505
+ 626 01c0 03       		.uleb128 0x3
+ 627 01c1 91       		.byte	0x91
+ 628 01c2 B07F     		.sleb128 -80
+ 629 01c4 09       		.uleb128 0x9
+ 630 01c5 D0020000 		.4byte	.LASF36
+ 631 01c9 01       		.byte	0x1
+ 632 01ca D0       		.byte	0xd0
+ 633 01cb 8C000000 		.4byte	0x8c
+ 634 01cf 03       		.uleb128 0x3
+ 635 01d0 91       		.byte	0x91
+ 636 01d1 AF7F     		.sleb128 -81
+ 637 01d3 0C       		.uleb128 0xc
+ 638 01d4 14000000 		.4byte	.LBB2
+ 639 01d8 22000000 		.4byte	.LBE2-.LBB2
+ 640 01dc 35020000 		.4byte	0x235
+ 641 01e0 0D       		.uleb128 0xd
+ 642 01e1 6900     		.ascii	"i\000"
+ 643 01e3 01       		.byte	0x1
+ 644 01e4 53       		.byte	0x53
+ 645 01e5 7E000000 		.4byte	0x7e
+ 646 01e9 EC010000 		.4byte	.LLST4
+ 647 01ed 0E       		.uleb128 0xe
+ 648 01ee 1E000000 		.4byte	.LVL4
+ 649 01f2 26050000 		.4byte	0x526
+ 650 01f6 01020000 		.4byte	0x201
+ 651 01fa 0F       		.uleb128 0xf
+ 652 01fb 01       		.uleb128 0x1
+ 653 01fc 50       		.byte	0x50
+ 654 01fd 02       		.uleb128 0x2
+ 655 01fe 74       		.byte	0x74
+ 656 01ff 00       		.sleb128 0
+ 657 0200 00       		.byte	0
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 18
 
 
- 650 01cd 0D       		.uleb128 0xd
- 651 01ce 01       		.uleb128 0x1
- 652 01cf 50       		.byte	0x50
- 653 01d0 01       		.uleb128 0x1
- 654 01d1 35       		.byte	0x35
- 655 01d2 00       		.byte	0
- 656 01d3 0C       		.uleb128 0xc
- 657 01d4 42000000 		.4byte	.LVL8
- 658 01d8 97050000 		.4byte	0x597
- 659 01dc F1010000 		.4byte	0x1f1
- 660 01e0 0D       		.uleb128 0xd
- 661 01e1 01       		.uleb128 0x1
- 662 01e2 50       		.byte	0x50
- 663 01e3 01       		.uleb128 0x1
- 664 01e4 48       		.byte	0x48
- 665 01e5 0D       		.uleb128 0xd
- 666 01e6 01       		.uleb128 0x1
- 667 01e7 51       		.byte	0x51
- 668 01e8 01       		.uleb128 0x1
- 669 01e9 3F       		.byte	0x3f
- 670 01ea 0D       		.uleb128 0xd
- 671 01eb 01       		.uleb128 0x1
- 672 01ec 52       		.byte	0x52
- 673 01ed 02       		.uleb128 0x2
- 674 01ee 91       		.byte	0x91
- 675 01ef 43       		.sleb128 -61
- 676 01f0 00       		.byte	0
- 677 01f1 0C       		.uleb128 0xc
- 678 01f2 50000000 		.4byte	.LVL10
- 679 01f6 60050000 		.4byte	0x560
- 680 01fa 0E020000 		.4byte	0x20e
- 681 01fe 0D       		.uleb128 0xd
- 682 01ff 01       		.uleb128 0x1
- 683 0200 50       		.byte	0x50
- 684 0201 02       		.uleb128 0x2
- 685 0202 91       		.byte	0x91
- 686 0203 44       		.sleb128 -60
- 687 0204 0D       		.uleb128 0xd
- 688 0205 01       		.uleb128 0x1
- 689 0206 51       		.byte	0x51
- 690 0207 05       		.uleb128 0x5
- 691 0208 03       		.byte	0x3
- 692 0209 20000000 		.4byte	.LC1
- 693 020d 00       		.byte	0
- 694 020e 0C       		.uleb128 0xc
- 695 020f 56000000 		.4byte	.LVL11
- 696 0213 6B050000 		.4byte	0x56b
- 697 0217 22020000 		.4byte	0x222
- 698 021b 0D       		.uleb128 0xd
- 699 021c 01       		.uleb128 0x1
- 700 021d 50       		.byte	0x50
- 701 021e 02       		.uleb128 0x2
- 702 021f 91       		.byte	0x91
- 703 0220 44       		.sleb128 -60
- 704 0221 00       		.byte	0
- 705 0222 0C       		.uleb128 0xc
- 706 0223 5E000000 		.4byte	.LVL14
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 19
+ 658 0201 0E       		.uleb128 0xe
+ 659 0202 2A000000 		.4byte	.LVL5
+ 660 0206 31050000 		.4byte	0x531
+ 661 020a 24020000 		.4byte	0x224
+ 662 020e 0F       		.uleb128 0xf
+ 663 020f 01       		.uleb128 0x1
+ 664 0210 50       		.byte	0x50
+ 665 0211 02       		.uleb128 0x2
+ 666 0212 91       		.byte	0x91
+ 667 0213 44       		.sleb128 -60
+ 668 0214 0F       		.uleb128 0xf
+ 669 0215 01       		.uleb128 0x1
+ 670 0216 51       		.byte	0x51
+ 671 0217 05       		.uleb128 0x5
+ 672 0218 03       		.byte	0x3
+ 673 0219 00000000 		.4byte	.LC0
+ 674 021d 0F       		.uleb128 0xf
+ 675 021e 01       		.uleb128 0x1
+ 676 021f 52       		.byte	0x52
+ 677 0220 02       		.uleb128 0x2
+ 678 0221 74       		.byte	0x74
+ 679 0222 00       		.sleb128 0
+ 680 0223 00       		.byte	0
+ 681 0224 10       		.uleb128 0x10
+ 682 0225 30000000 		.4byte	.LVL6
+ 683 0229 3C050000 		.4byte	0x53c
+ 684 022d 0F       		.uleb128 0xf
+ 685 022e 01       		.uleb128 0x1
+ 686 022f 50       		.byte	0x50
+ 687 0230 02       		.uleb128 0x2
+ 688 0231 91       		.byte	0x91
+ 689 0232 44       		.sleb128 -60
+ 690 0233 00       		.byte	0
+ 691 0234 00       		.byte	0
+ 692 0235 11       		.uleb128 0x11
+ 693 0236 0A000000 		.4byte	.LVL0
+ 694 023a 47050000 		.4byte	0x547
+ 695 023e 11       		.uleb128 0x11
+ 696 023f 0E000000 		.4byte	.LVL1
+ 697 0243 52050000 		.4byte	0x552
+ 698 0247 0E       		.uleb128 0xe
+ 699 0248 14000000 		.4byte	.LVL2
+ 700 024c 5D050000 		.4byte	0x55d
+ 701 0250 5A020000 		.4byte	0x25a
+ 702 0254 0F       		.uleb128 0xf
+ 703 0255 01       		.uleb128 0x1
+ 704 0256 50       		.byte	0x50
+ 705 0257 01       		.uleb128 0x1
+ 706 0258 35       		.byte	0x35
+ 707 0259 00       		.byte	0
+ 708 025a 0E       		.uleb128 0xe
+ 709 025b 42000000 		.4byte	.LVL8
+ 710 025f 68050000 		.4byte	0x568
+ 711 0263 78020000 		.4byte	0x278
+ 712 0267 0F       		.uleb128 0xf
+ 713 0268 01       		.uleb128 0x1
+ 714 0269 50       		.byte	0x50
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 19
 
 
- 707 0227 6B050000 		.4byte	0x56b
- 708 022b 39020000 		.4byte	0x239
- 709 022f 0D       		.uleb128 0xd
- 710 0230 01       		.uleb128 0x1
- 711 0231 50       		.byte	0x50
- 712 0232 05       		.uleb128 0x5
- 713 0233 03       		.byte	0x3
- 714 0234 48000000 		.4byte	.LC2
- 715 0238 00       		.byte	0
- 716 0239 0C       		.uleb128 0xc
- 717 023a 6A000000 		.4byte	.LVL15
- 718 023e 97050000 		.4byte	0x597
- 719 0242 58020000 		.4byte	0x258
- 720 0246 0D       		.uleb128 0xd
- 721 0247 01       		.uleb128 0x1
- 722 0248 50       		.byte	0x50
- 723 0249 01       		.uleb128 0x1
- 724 024a 48       		.byte	0x48
- 725 024b 0D       		.uleb128 0xd
- 726 024c 01       		.uleb128 0x1
- 727 024d 51       		.byte	0x51
- 728 024e 02       		.uleb128 0x2
- 729 024f 08       		.byte	0x8
- 730 0250 27       		.byte	0x27
- 731 0251 0D       		.uleb128 0xd
- 732 0252 01       		.uleb128 0x1
- 733 0253 52       		.byte	0x52
- 734 0254 02       		.uleb128 0x2
- 735 0255 91       		.byte	0x91
- 736 0256 42       		.sleb128 -62
- 737 0257 00       		.byte	0
- 738 0258 0C       		.uleb128 0xc
- 739 0259 78000000 		.4byte	.LVL17
- 740 025d 60050000 		.4byte	0x560
- 741 0261 75020000 		.4byte	0x275
- 742 0265 0D       		.uleb128 0xd
- 743 0266 01       		.uleb128 0x1
- 744 0267 50       		.byte	0x50
- 745 0268 02       		.uleb128 0x2
- 746 0269 91       		.byte	0x91
- 747 026a 44       		.sleb128 -60
- 748 026b 0D       		.uleb128 0xd
- 749 026c 01       		.uleb128 0x1
- 750 026d 51       		.byte	0x51
- 751 026e 05       		.uleb128 0x5
- 752 026f 03       		.byte	0x3
- 753 0270 6C000000 		.4byte	.LC3
- 754 0274 00       		.byte	0
- 755 0275 0C       		.uleb128 0xc
- 756 0276 7E000000 		.4byte	.LVL18
- 757 027a 6B050000 		.4byte	0x56b
- 758 027e 89020000 		.4byte	0x289
- 759 0282 0D       		.uleb128 0xd
- 760 0283 01       		.uleb128 0x1
- 761 0284 50       		.byte	0x50
- 762 0285 02       		.uleb128 0x2
- 763 0286 91       		.byte	0x91
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 20
+ 715 026a 01       		.uleb128 0x1
+ 716 026b 48       		.byte	0x48
+ 717 026c 0F       		.uleb128 0xf
+ 718 026d 01       		.uleb128 0x1
+ 719 026e 51       		.byte	0x51
+ 720 026f 01       		.uleb128 0x1
+ 721 0270 3F       		.byte	0x3f
+ 722 0271 0F       		.uleb128 0xf
+ 723 0272 01       		.uleb128 0x1
+ 724 0273 52       		.byte	0x52
+ 725 0274 02       		.uleb128 0x2
+ 726 0275 91       		.byte	0x91
+ 727 0276 43       		.sleb128 -61
+ 728 0277 00       		.byte	0
+ 729 0278 0E       		.uleb128 0xe
+ 730 0279 50000000 		.4byte	.LVL10
+ 731 027d 31050000 		.4byte	0x531
+ 732 0281 95020000 		.4byte	0x295
+ 733 0285 0F       		.uleb128 0xf
+ 734 0286 01       		.uleb128 0x1
+ 735 0287 50       		.byte	0x50
+ 736 0288 02       		.uleb128 0x2
+ 737 0289 91       		.byte	0x91
+ 738 028a 44       		.sleb128 -60
+ 739 028b 0F       		.uleb128 0xf
+ 740 028c 01       		.uleb128 0x1
+ 741 028d 51       		.byte	0x51
+ 742 028e 05       		.uleb128 0x5
+ 743 028f 03       		.byte	0x3
+ 744 0290 20000000 		.4byte	.LC1
+ 745 0294 00       		.byte	0
+ 746 0295 0E       		.uleb128 0xe
+ 747 0296 56000000 		.4byte	.LVL11
+ 748 029a 3C050000 		.4byte	0x53c
+ 749 029e A9020000 		.4byte	0x2a9
+ 750 02a2 0F       		.uleb128 0xf
+ 751 02a3 01       		.uleb128 0x1
+ 752 02a4 50       		.byte	0x50
+ 753 02a5 02       		.uleb128 0x2
+ 754 02a6 91       		.byte	0x91
+ 755 02a7 44       		.sleb128 -60
+ 756 02a8 00       		.byte	0
+ 757 02a9 0E       		.uleb128 0xe
+ 758 02aa 5E000000 		.4byte	.LVL14
+ 759 02ae 3C050000 		.4byte	0x53c
+ 760 02b2 C0020000 		.4byte	0x2c0
+ 761 02b6 0F       		.uleb128 0xf
+ 762 02b7 01       		.uleb128 0x1
+ 763 02b8 50       		.byte	0x50
+ 764 02b9 05       		.uleb128 0x5
+ 765 02ba 03       		.byte	0x3
+ 766 02bb 48000000 		.4byte	.LC2
+ 767 02bf 00       		.byte	0
+ 768 02c0 0E       		.uleb128 0xe
+ 769 02c1 6A000000 		.4byte	.LVL15
+ 770 02c5 68050000 		.4byte	0x568
+ 771 02c9 DF020000 		.4byte	0x2df
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 20
 
 
- 764 0287 44       		.sleb128 -60
- 765 0288 00       		.byte	0
- 766 0289 0C       		.uleb128 0xc
- 767 028a 86000000 		.4byte	.LVL21
- 768 028e 6B050000 		.4byte	0x56b
- 769 0292 A0020000 		.4byte	0x2a0
- 770 0296 0D       		.uleb128 0xd
- 771 0297 01       		.uleb128 0x1
- 772 0298 50       		.byte	0x50
- 773 0299 05       		.uleb128 0x5
- 774 029a 03       		.byte	0x3
- 775 029b 88000000 		.4byte	.LC4
- 776 029f 00       		.byte	0
- 777 02a0 0C       		.uleb128 0xc
- 778 02a1 92000000 		.4byte	.LVL22
- 779 02a5 97050000 		.4byte	0x597
- 780 02a9 BF020000 		.4byte	0x2bf
- 781 02ad 0D       		.uleb128 0xd
- 782 02ae 01       		.uleb128 0x1
- 783 02af 50       		.byte	0x50
- 784 02b0 01       		.uleb128 0x1
- 785 02b1 48       		.byte	0x48
- 786 02b2 0D       		.uleb128 0xd
- 787 02b3 01       		.uleb128 0x1
- 788 02b4 51       		.byte	0x51
- 789 02b5 02       		.uleb128 0x2
- 790 02b6 08       		.byte	0x8
- 791 02b7 20       		.byte	0x20
- 792 02b8 0D       		.uleb128 0xd
- 793 02b9 01       		.uleb128 0x1
- 794 02ba 52       		.byte	0x52
- 795 02bb 02       		.uleb128 0x2
- 796 02bc 91       		.byte	0x91
- 797 02bd 41       		.sleb128 -63
- 798 02be 00       		.byte	0
- 799 02bf 0C       		.uleb128 0xc
- 800 02c0 A0000000 		.4byte	.LVL24
- 801 02c4 60050000 		.4byte	0x560
- 802 02c8 DC020000 		.4byte	0x2dc
- 803 02cc 0D       		.uleb128 0xd
- 804 02cd 01       		.uleb128 0x1
- 805 02ce 50       		.byte	0x50
- 806 02cf 02       		.uleb128 0x2
- 807 02d0 91       		.byte	0x91
- 808 02d1 44       		.sleb128 -60
- 809 02d2 0D       		.uleb128 0xd
- 810 02d3 01       		.uleb128 0x1
- 811 02d4 51       		.byte	0x51
- 812 02d5 05       		.uleb128 0x5
- 813 02d6 03       		.byte	0x3
- 814 02d7 C4000000 		.4byte	.LC5
- 815 02db 00       		.byte	0
- 816 02dc 0C       		.uleb128 0xc
- 817 02dd A6000000 		.4byte	.LVL25
- 818 02e1 6B050000 		.4byte	0x56b
- 819 02e5 F0020000 		.4byte	0x2f0
- 820 02e9 0D       		.uleb128 0xd
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 21
+ 772 02cd 0F       		.uleb128 0xf
+ 773 02ce 01       		.uleb128 0x1
+ 774 02cf 50       		.byte	0x50
+ 775 02d0 01       		.uleb128 0x1
+ 776 02d1 48       		.byte	0x48
+ 777 02d2 0F       		.uleb128 0xf
+ 778 02d3 01       		.uleb128 0x1
+ 779 02d4 51       		.byte	0x51
+ 780 02d5 02       		.uleb128 0x2
+ 781 02d6 08       		.byte	0x8
+ 782 02d7 20       		.byte	0x20
+ 783 02d8 0F       		.uleb128 0xf
+ 784 02d9 01       		.uleb128 0x1
+ 785 02da 52       		.byte	0x52
+ 786 02db 02       		.uleb128 0x2
+ 787 02dc 91       		.byte	0x91
+ 788 02dd 42       		.sleb128 -62
+ 789 02de 00       		.byte	0
+ 790 02df 0E       		.uleb128 0xe
+ 791 02e0 78000000 		.4byte	.LVL17
+ 792 02e4 31050000 		.4byte	0x531
+ 793 02e8 FC020000 		.4byte	0x2fc
+ 794 02ec 0F       		.uleb128 0xf
+ 795 02ed 01       		.uleb128 0x1
+ 796 02ee 50       		.byte	0x50
+ 797 02ef 02       		.uleb128 0x2
+ 798 02f0 91       		.byte	0x91
+ 799 02f1 44       		.sleb128 -60
+ 800 02f2 0F       		.uleb128 0xf
+ 801 02f3 01       		.uleb128 0x1
+ 802 02f4 51       		.byte	0x51
+ 803 02f5 05       		.uleb128 0x5
+ 804 02f6 03       		.byte	0x3
+ 805 02f7 6C000000 		.4byte	.LC3
+ 806 02fb 00       		.byte	0
+ 807 02fc 0E       		.uleb128 0xe
+ 808 02fd 7E000000 		.4byte	.LVL18
+ 809 0301 3C050000 		.4byte	0x53c
+ 810 0305 10030000 		.4byte	0x310
+ 811 0309 0F       		.uleb128 0xf
+ 812 030a 01       		.uleb128 0x1
+ 813 030b 50       		.byte	0x50
+ 814 030c 02       		.uleb128 0x2
+ 815 030d 91       		.byte	0x91
+ 816 030e 44       		.sleb128 -60
+ 817 030f 00       		.byte	0
+ 818 0310 0E       		.uleb128 0xe
+ 819 0311 86000000 		.4byte	.LVL21
+ 820 0315 3C050000 		.4byte	0x53c
+ 821 0319 27030000 		.4byte	0x327
+ 822 031d 0F       		.uleb128 0xf
+ 823 031e 01       		.uleb128 0x1
+ 824 031f 50       		.byte	0x50
+ 825 0320 05       		.uleb128 0x5
+ 826 0321 03       		.byte	0x3
+ 827 0322 8C000000 		.4byte	.LC4
+ 828 0326 00       		.byte	0
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 21
 
 
- 821 02ea 01       		.uleb128 0x1
- 822 02eb 50       		.byte	0x50
- 823 02ec 02       		.uleb128 0x2
- 824 02ed 91       		.byte	0x91
- 825 02ee 44       		.sleb128 -60
- 826 02ef 00       		.byte	0
- 827 02f0 0C       		.uleb128 0xc
- 828 02f1 AE000000 		.4byte	.LVL28
- 829 02f5 6B050000 		.4byte	0x56b
- 830 02f9 07030000 		.4byte	0x307
- 831 02fd 0D       		.uleb128 0xd
- 832 02fe 01       		.uleb128 0x1
- 833 02ff 50       		.byte	0x50
- 834 0300 05       		.uleb128 0x5
- 835 0301 03       		.byte	0x3
- 836 0302 E4000000 		.4byte	.LC6
- 837 0306 00       		.byte	0
- 838 0307 0C       		.uleb128 0xc
- 839 0308 B8000000 		.4byte	.LVL29
- 840 030c 97050000 		.4byte	0x597
- 841 0310 26030000 		.4byte	0x326
- 842 0314 0D       		.uleb128 0xd
- 843 0315 01       		.uleb128 0x1
- 844 0316 50       		.byte	0x50
- 845 0317 01       		.uleb128 0x1
- 846 0318 48       		.byte	0x48
- 847 0319 0D       		.uleb128 0xd
- 848 031a 01       		.uleb128 0x1
- 849 031b 51       		.byte	0x51
- 850 031c 02       		.uleb128 0x2
- 851 031d 08       		.byte	0x8
- 852 031e 23       		.byte	0x23
- 853 031f 0D       		.uleb128 0xd
- 854 0320 01       		.uleb128 0x1
- 855 0321 52       		.byte	0x52
- 856 0322 02       		.uleb128 0x2
- 857 0323 7D       		.byte	0x7d
- 858 0324 00       		.sleb128 0
- 859 0325 00       		.byte	0
- 860 0326 0C       		.uleb128 0xc
- 861 0327 C6000000 		.4byte	.LVL31
- 862 032b 60050000 		.4byte	0x560
- 863 032f 43030000 		.4byte	0x343
- 864 0333 0D       		.uleb128 0xd
- 865 0334 01       		.uleb128 0x1
- 866 0335 50       		.byte	0x50
- 867 0336 02       		.uleb128 0x2
- 868 0337 91       		.byte	0x91
- 869 0338 44       		.sleb128 -60
- 870 0339 0D       		.uleb128 0xd
- 871 033a 01       		.uleb128 0x1
- 872 033b 51       		.byte	0x51
- 873 033c 05       		.uleb128 0x5
- 874 033d 03       		.byte	0x3
- 875 033e 20010000 		.4byte	.LC7
- 876 0342 00       		.byte	0
- 877 0343 0C       		.uleb128 0xc
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 22
+ 829 0327 0E       		.uleb128 0xe
+ 830 0328 92000000 		.4byte	.LVL22
+ 831 032c 68050000 		.4byte	0x568
+ 832 0330 46030000 		.4byte	0x346
+ 833 0334 0F       		.uleb128 0xf
+ 834 0335 01       		.uleb128 0x1
+ 835 0336 50       		.byte	0x50
+ 836 0337 01       		.uleb128 0x1
+ 837 0338 48       		.byte	0x48
+ 838 0339 0F       		.uleb128 0xf
+ 839 033a 01       		.uleb128 0x1
+ 840 033b 51       		.byte	0x51
+ 841 033c 02       		.uleb128 0x2
+ 842 033d 08       		.byte	0x8
+ 843 033e 23       		.byte	0x23
+ 844 033f 0F       		.uleb128 0xf
+ 845 0340 01       		.uleb128 0x1
+ 846 0341 52       		.byte	0x52
+ 847 0342 02       		.uleb128 0x2
+ 848 0343 91       		.byte	0x91
+ 849 0344 41       		.sleb128 -63
+ 850 0345 00       		.byte	0
+ 851 0346 0E       		.uleb128 0xe
+ 852 0347 A0000000 		.4byte	.LVL24
+ 853 034b 31050000 		.4byte	0x531
+ 854 034f 63030000 		.4byte	0x363
+ 855 0353 0F       		.uleb128 0xf
+ 856 0354 01       		.uleb128 0x1
+ 857 0355 50       		.byte	0x50
+ 858 0356 02       		.uleb128 0x2
+ 859 0357 91       		.byte	0x91
+ 860 0358 44       		.sleb128 -60
+ 861 0359 0F       		.uleb128 0xf
+ 862 035a 01       		.uleb128 0x1
+ 863 035b 51       		.byte	0x51
+ 864 035c 05       		.uleb128 0x5
+ 865 035d 03       		.byte	0x3
+ 866 035e C8000000 		.4byte	.LC5
+ 867 0362 00       		.byte	0
+ 868 0363 0E       		.uleb128 0xe
+ 869 0364 A6000000 		.4byte	.LVL25
+ 870 0368 3C050000 		.4byte	0x53c
+ 871 036c 77030000 		.4byte	0x377
+ 872 0370 0F       		.uleb128 0xf
+ 873 0371 01       		.uleb128 0x1
+ 874 0372 50       		.byte	0x50
+ 875 0373 02       		.uleb128 0x2
+ 876 0374 91       		.byte	0x91
+ 877 0375 44       		.sleb128 -60
+ 878 0376 00       		.byte	0
+ 879 0377 0E       		.uleb128 0xe
+ 880 0378 AE000000 		.4byte	.LVL28
+ 881 037c 3C050000 		.4byte	0x53c
+ 882 0380 8E030000 		.4byte	0x38e
+ 883 0384 0F       		.uleb128 0xf
+ 884 0385 01       		.uleb128 0x1
+ 885 0386 50       		.byte	0x50
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 22
 
 
- 878 0344 CC000000 		.4byte	.LVL32
- 879 0348 6B050000 		.4byte	0x56b
- 880 034c 57030000 		.4byte	0x357
- 881 0350 0D       		.uleb128 0xd
- 882 0351 01       		.uleb128 0x1
- 883 0352 50       		.byte	0x50
- 884 0353 02       		.uleb128 0x2
- 885 0354 91       		.byte	0x91
- 886 0355 44       		.sleb128 -60
- 887 0356 00       		.byte	0
- 888 0357 0C       		.uleb128 0xc
- 889 0358 D4000000 		.4byte	.LVL35
- 890 035c 6B050000 		.4byte	0x56b
- 891 0360 6E030000 		.4byte	0x36e
- 892 0364 0D       		.uleb128 0xd
- 893 0365 01       		.uleb128 0x1
- 894 0366 50       		.byte	0x50
- 895 0367 05       		.uleb128 0x5
- 896 0368 03       		.byte	0x3
- 897 0369 40010000 		.4byte	.LC8
- 898 036d 00       		.byte	0
- 899 036e 0C       		.uleb128 0xc
- 900 036f DA000000 		.4byte	.LVL36
- 901 0373 6B050000 		.4byte	0x56b
- 902 0377 85030000 		.4byte	0x385
- 903 037b 0D       		.uleb128 0xd
- 904 037c 01       		.uleb128 0x1
- 905 037d 50       		.byte	0x50
- 906 037e 05       		.uleb128 0x5
- 907 037f 03       		.byte	0x3
- 908 0380 7C010000 		.4byte	.LC9
- 909 0384 00       		.byte	0
- 910 0385 0C       		.uleb128 0xc
- 911 0386 F0000000 		.4byte	.LVL37
- 912 038a A2050000 		.4byte	0x5a2
- 913 038e A4030000 		.4byte	0x3a4
- 914 0392 0D       		.uleb128 0xd
- 915 0393 01       		.uleb128 0x1
- 916 0394 50       		.byte	0x50
- 917 0395 01       		.uleb128 0x1
- 918 0396 48       		.byte	0x48
- 919 0397 0D       		.uleb128 0xd
- 920 0398 01       		.uleb128 0x1
- 921 0399 51       		.byte	0x51
- 922 039a 02       		.uleb128 0x2
- 923 039b 08       		.byte	0x8
- 924 039c 20       		.byte	0x20
- 925 039d 0D       		.uleb128 0xd
- 926 039e 01       		.uleb128 0x1
- 927 039f 52       		.byte	0x52
- 928 03a0 02       		.uleb128 0x2
- 929 03a1 08       		.byte	0x8
- 930 03a2 57       		.byte	0x57
- 931 03a3 00       		.byte	0
- 932 03a4 0C       		.uleb128 0xc
- 933 03a5 FE000000 		.4byte	.LVL39
- 934 03a9 60050000 		.4byte	0x560
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 23
+ 886 0387 05       		.uleb128 0x5
+ 887 0388 03       		.byte	0x3
+ 888 0389 E8000000 		.4byte	.LC6
+ 889 038d 00       		.byte	0
+ 890 038e 0E       		.uleb128 0xe
+ 891 038f B4000000 		.4byte	.LVL29
+ 892 0393 3C050000 		.4byte	0x53c
+ 893 0397 A5030000 		.4byte	0x3a5
+ 894 039b 0F       		.uleb128 0xf
+ 895 039c 01       		.uleb128 0x1
+ 896 039d 50       		.byte	0x50
+ 897 039e 05       		.uleb128 0x5
+ 898 039f 03       		.byte	0x3
+ 899 03a0 24010000 		.4byte	.LC7
+ 900 03a4 00       		.byte	0
+ 901 03a5 0E       		.uleb128 0xe
+ 902 03a6 CA000000 		.4byte	.LVL30
+ 903 03aa 73050000 		.4byte	0x573
+ 904 03ae C4030000 		.4byte	0x3c4
+ 905 03b2 0F       		.uleb128 0xf
+ 906 03b3 01       		.uleb128 0x1
+ 907 03b4 50       		.byte	0x50
+ 908 03b5 01       		.uleb128 0x1
+ 909 03b6 48       		.byte	0x48
+ 910 03b7 0F       		.uleb128 0xf
+ 911 03b8 01       		.uleb128 0x1
+ 912 03b9 51       		.byte	0x51
+ 913 03ba 02       		.uleb128 0x2
+ 914 03bb 08       		.byte	0x8
+ 915 03bc 20       		.byte	0x20
+ 916 03bd 0F       		.uleb128 0xf
+ 917 03be 01       		.uleb128 0x1
+ 918 03bf 52       		.byte	0x52
+ 919 03c0 02       		.uleb128 0x2
+ 920 03c1 08       		.byte	0x8
+ 921 03c2 57       		.byte	0x57
+ 922 03c3 00       		.byte	0
+ 923 03c4 0E       		.uleb128 0xe
+ 924 03c5 D8000000 		.4byte	.LVL32
+ 925 03c9 31050000 		.4byte	0x531
+ 926 03cd E1030000 		.4byte	0x3e1
+ 927 03d1 0F       		.uleb128 0xf
+ 928 03d2 01       		.uleb128 0x1
+ 929 03d3 50       		.byte	0x50
+ 930 03d4 02       		.uleb128 0x2
+ 931 03d5 91       		.byte	0x91
+ 932 03d6 44       		.sleb128 -60
+ 933 03d7 0F       		.uleb128 0xf
+ 934 03d8 01       		.uleb128 0x1
+ 935 03d9 51       		.byte	0x51
+ 936 03da 05       		.uleb128 0x5
+ 937 03db 03       		.byte	0x3
+ 938 03dc 40010000 		.4byte	.LC8
+ 939 03e0 00       		.byte	0
+ 940 03e1 0E       		.uleb128 0xe
+ 941 03e2 DE000000 		.4byte	.LVL33
+ 942 03e6 3C050000 		.4byte	0x53c
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 23
 
 
- 935 03ad C1030000 		.4byte	0x3c1
- 936 03b1 0D       		.uleb128 0xd
- 937 03b2 01       		.uleb128 0x1
- 938 03b3 50       		.byte	0x50
- 939 03b4 02       		.uleb128 0x2
- 940 03b5 91       		.byte	0x91
- 941 03b6 44       		.sleb128 -60
- 942 03b7 0D       		.uleb128 0xd
- 943 03b8 01       		.uleb128 0x1
- 944 03b9 51       		.byte	0x51
- 945 03ba 05       		.uleb128 0x5
- 946 03bb 03       		.byte	0x3
- 947 03bc 98010000 		.4byte	.LC10
- 948 03c0 00       		.byte	0
- 949 03c1 0C       		.uleb128 0xc
- 950 03c2 04010000 		.4byte	.LVL40
- 951 03c6 6B050000 		.4byte	0x56b
- 952 03ca D5030000 		.4byte	0x3d5
- 953 03ce 0D       		.uleb128 0xd
- 954 03cf 01       		.uleb128 0x1
- 955 03d0 50       		.byte	0x50
- 956 03d1 02       		.uleb128 0x2
- 957 03d2 91       		.byte	0x91
- 958 03d3 44       		.sleb128 -60
- 959 03d4 00       		.byte	0
- 960 03d5 0C       		.uleb128 0xc
- 961 03d6 0C010000 		.4byte	.LVL43
- 962 03da 6B050000 		.4byte	0x56b
- 963 03de EC030000 		.4byte	0x3ec
- 964 03e2 0D       		.uleb128 0xd
- 965 03e3 01       		.uleb128 0x1
- 966 03e4 50       		.byte	0x50
- 967 03e5 05       		.uleb128 0x5
- 968 03e6 03       		.byte	0x3
- 969 03e7 D0010000 		.4byte	.LC11
- 970 03eb 00       		.byte	0
- 971 03ec 0C       		.uleb128 0xc
- 972 03ed 12010000 		.4byte	.LVL44
- 973 03f1 6B050000 		.4byte	0x56b
- 974 03f5 03040000 		.4byte	0x403
- 975 03f9 0D       		.uleb128 0xd
- 976 03fa 01       		.uleb128 0x1
- 977 03fb 50       		.byte	0x50
- 978 03fc 05       		.uleb128 0x5
- 979 03fd 03       		.byte	0x3
- 980 03fe 7C010000 		.4byte	.LC9
- 981 0402 00       		.byte	0
- 982 0403 0C       		.uleb128 0xc
- 983 0404 28010000 		.4byte	.LVL45
- 984 0408 A2050000 		.4byte	0x5a2
- 985 040c 21040000 		.4byte	0x421
- 986 0410 0D       		.uleb128 0xd
- 987 0411 01       		.uleb128 0x1
- 988 0412 50       		.byte	0x50
- 989 0413 01       		.uleb128 0x1
- 990 0414 48       		.byte	0x48
- 991 0415 0D       		.uleb128 0xd
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 24
+ 943 03ea F5030000 		.4byte	0x3f5
+ 944 03ee 0F       		.uleb128 0xf
+ 945 03ef 01       		.uleb128 0x1
+ 946 03f0 50       		.byte	0x50
+ 947 03f1 02       		.uleb128 0x2
+ 948 03f2 91       		.byte	0x91
+ 949 03f3 44       		.sleb128 -60
+ 950 03f4 00       		.byte	0
+ 951 03f5 0E       		.uleb128 0xe
+ 952 03f6 E6000000 		.4byte	.LVL36
+ 953 03fa 3C050000 		.4byte	0x53c
+ 954 03fe 0C040000 		.4byte	0x40c
+ 955 0402 0F       		.uleb128 0xf
+ 956 0403 01       		.uleb128 0x1
+ 957 0404 50       		.byte	0x50
+ 958 0405 05       		.uleb128 0x5
+ 959 0406 03       		.byte	0x3
+ 960 0407 78010000 		.4byte	.LC9
+ 961 040b 00       		.byte	0
+ 962 040c 0E       		.uleb128 0xe
+ 963 040d EC000000 		.4byte	.LVL37
+ 964 0411 3C050000 		.4byte	0x53c
+ 965 0415 23040000 		.4byte	0x423
+ 966 0419 0F       		.uleb128 0xf
+ 967 041a 01       		.uleb128 0x1
+ 968 041b 50       		.byte	0x50
+ 969 041c 05       		.uleb128 0x5
+ 970 041d 03       		.byte	0x3
+ 971 041e 24010000 		.4byte	.LC7
+ 972 0422 00       		.byte	0
+ 973 0423 0E       		.uleb128 0xe
+ 974 0424 02010000 		.4byte	.LVL38
+ 975 0428 73050000 		.4byte	0x573
+ 976 042c 41040000 		.4byte	0x441
+ 977 0430 0F       		.uleb128 0xf
+ 978 0431 01       		.uleb128 0x1
+ 979 0432 50       		.byte	0x50
+ 980 0433 01       		.uleb128 0x1
+ 981 0434 48       		.byte	0x48
+ 982 0435 0F       		.uleb128 0xf
+ 983 0436 01       		.uleb128 0x1
+ 984 0437 51       		.byte	0x51
+ 985 0438 02       		.uleb128 0x2
+ 986 0439 08       		.byte	0x8
+ 987 043a 23       		.byte	0x23
+ 988 043b 0F       		.uleb128 0xf
+ 989 043c 01       		.uleb128 0x1
+ 990 043d 52       		.byte	0x52
+ 991 043e 01       		.uleb128 0x1
+ 992 043f 48       		.byte	0x48
+ 993 0440 00       		.byte	0
+ 994 0441 0E       		.uleb128 0xe
+ 995 0442 10010000 		.4byte	.LVL40
+ 996 0446 31050000 		.4byte	0x531
+ 997 044a 5E040000 		.4byte	0x45e
+ 998 044e 0F       		.uleb128 0xf
+ 999 044f 01       		.uleb128 0x1
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 24
 
 
- 992 0416 01       		.uleb128 0x1
- 993 0417 51       		.byte	0x51
- 994 0418 02       		.uleb128 0x2
- 995 0419 08       		.byte	0x8
- 996 041a 23       		.byte	0x23
- 997 041b 0D       		.uleb128 0xd
- 998 041c 01       		.uleb128 0x1
- 999 041d 52       		.byte	0x52
- 1000 041e 01       		.uleb128 0x1
- 1001 041f 48       		.byte	0x48
- 1002 0420 00       		.byte	0
- 1003 0421 0C       		.uleb128 0xc
- 1004 0422 36010000 		.4byte	.LVL47
- 1005 0426 60050000 		.4byte	0x560
- 1006 042a 3E040000 		.4byte	0x43e
- 1007 042e 0D       		.uleb128 0xd
- 1008 042f 01       		.uleb128 0x1
- 1009 0430 50       		.byte	0x50
- 1010 0431 02       		.uleb128 0x2
- 1011 0432 91       		.byte	0x91
- 1012 0433 44       		.sleb128 -60
- 1013 0434 0D       		.uleb128 0xd
- 1014 0435 01       		.uleb128 0x1
- 1015 0436 51       		.byte	0x51
- 1016 0437 05       		.uleb128 0x5
- 1017 0438 03       		.byte	0x3
- 1018 0439 0C020000 		.4byte	.LC12
- 1019 043d 00       		.byte	0
- 1020 043e 0C       		.uleb128 0xc
- 1021 043f 3C010000 		.4byte	.LVL48
- 1022 0443 6B050000 		.4byte	0x56b
- 1023 0447 52040000 		.4byte	0x452
- 1024 044b 0D       		.uleb128 0xd
- 1025 044c 01       		.uleb128 0x1
- 1026 044d 50       		.byte	0x50
- 1027 044e 02       		.uleb128 0x2
- 1028 044f 91       		.byte	0x91
- 1029 0450 44       		.sleb128 -60
- 1030 0451 00       		.byte	0
- 1031 0452 0C       		.uleb128 0xc
- 1032 0453 44010000 		.4byte	.LVL51
- 1033 0457 6B050000 		.4byte	0x56b
- 1034 045b 69040000 		.4byte	0x469
- 1035 045f 0D       		.uleb128 0xd
- 1036 0460 01       		.uleb128 0x1
- 1037 0461 50       		.byte	0x50
- 1038 0462 05       		.uleb128 0x5
- 1039 0463 03       		.byte	0x3
- 1040 0464 44020000 		.4byte	.LC13
- 1041 0468 00       		.byte	0
- 1042 0469 0C       		.uleb128 0xc
- 1043 046a 50010000 		.4byte	.LVL52
- 1044 046e 97050000 		.4byte	0x597
- 1045 0472 88040000 		.4byte	0x488
- 1046 0476 0D       		.uleb128 0xd
- 1047 0477 01       		.uleb128 0x1
- 1048 0478 50       		.byte	0x50
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 25
+ 1000 0450 50       		.byte	0x50
+ 1001 0451 02       		.uleb128 0x2
+ 1002 0452 91       		.byte	0x91
+ 1003 0453 44       		.sleb128 -60
+ 1004 0454 0F       		.uleb128 0xf
+ 1005 0455 01       		.uleb128 0x1
+ 1006 0456 51       		.byte	0x51
+ 1007 0457 05       		.uleb128 0x5
+ 1008 0458 03       		.byte	0x3
+ 1009 0459 B4010000 		.4byte	.LC10
+ 1010 045d 00       		.byte	0
+ 1011 045e 0E       		.uleb128 0xe
+ 1012 045f 16010000 		.4byte	.LVL41
+ 1013 0463 3C050000 		.4byte	0x53c
+ 1014 0467 72040000 		.4byte	0x472
+ 1015 046b 0F       		.uleb128 0xf
+ 1016 046c 01       		.uleb128 0x1
+ 1017 046d 50       		.byte	0x50
+ 1018 046e 02       		.uleb128 0x2
+ 1019 046f 91       		.byte	0x91
+ 1020 0470 44       		.sleb128 -60
+ 1021 0471 00       		.byte	0
+ 1022 0472 0E       		.uleb128 0xe
+ 1023 0473 1E010000 		.4byte	.LVL44
+ 1024 0477 3C050000 		.4byte	0x53c
+ 1025 047b 89040000 		.4byte	0x489
+ 1026 047f 0F       		.uleb128 0xf
+ 1027 0480 01       		.uleb128 0x1
+ 1028 0481 50       		.byte	0x50
+ 1029 0482 05       		.uleb128 0x5
+ 1030 0483 03       		.byte	0x3
+ 1031 0484 EC010000 		.4byte	.LC11
+ 1032 0488 00       		.byte	0
+ 1033 0489 0E       		.uleb128 0xe
+ 1034 048a 36010000 		.4byte	.LVL45
+ 1035 048e 68050000 		.4byte	0x568
+ 1036 0492 A9040000 		.4byte	0x4a9
+ 1037 0496 0F       		.uleb128 0xf
+ 1038 0497 01       		.uleb128 0x1
+ 1039 0498 50       		.byte	0x50
+ 1040 0499 01       		.uleb128 0x1
+ 1041 049a 48       		.byte	0x48
+ 1042 049b 0F       		.uleb128 0xf
+ 1043 049c 01       		.uleb128 0x1
+ 1044 049d 51       		.byte	0x51
+ 1045 049e 02       		.uleb128 0x2
+ 1046 049f 08       		.byte	0x8
+ 1047 04a0 27       		.byte	0x27
+ 1048 04a1 0F       		.uleb128 0xf
+ 1049 04a2 01       		.uleb128 0x1
+ 1050 04a3 52       		.byte	0x52
+ 1051 04a4 03       		.uleb128 0x3
+ 1052 04a5 91       		.byte	0x91
+ 1053 04a6 AF7F     		.sleb128 -81
+ 1054 04a8 00       		.byte	0
+ 1055 04a9 0E       		.uleb128 0xe
+ 1056 04aa 56010000 		.4byte	.LVL47
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 25
 
 
- 1049 0479 01       		.uleb128 0x1
- 1050 047a 48       		.byte	0x48
- 1051 047b 0D       		.uleb128 0xd
- 1052 047c 01       		.uleb128 0x1
- 1053 047d 51       		.byte	0x51
- 1054 047e 02       		.uleb128 0x2
- 1055 047f 08       		.byte	0x8
- 1056 0480 20       		.byte	0x20
- 1057 0481 0D       		.uleb128 0xd
- 1058 0482 01       		.uleb128 0x1
- 1059 0483 52       		.byte	0x52
- 1060 0484 02       		.uleb128 0x2
- 1061 0485 91       		.byte	0x91
- 1062 0486 41       		.sleb128 -63
- 1063 0487 00       		.byte	0
- 1064 0488 0C       		.uleb128 0xc
- 1065 0489 5E010000 		.4byte	.LVL54
- 1066 048d 60050000 		.4byte	0x560
- 1067 0491 A5040000 		.4byte	0x4a5
- 1068 0495 0D       		.uleb128 0xd
- 1069 0496 01       		.uleb128 0x1
- 1070 0497 50       		.byte	0x50
- 1071 0498 02       		.uleb128 0x2
- 1072 0499 91       		.byte	0x91
- 1073 049a 44       		.sleb128 -60
- 1074 049b 0D       		.uleb128 0xd
- 1075 049c 01       		.uleb128 0x1
- 1076 049d 51       		.byte	0x51
- 1077 049e 05       		.uleb128 0x5
- 1078 049f 03       		.byte	0x3
- 1079 04a0 80020000 		.4byte	.LC14
- 1080 04a4 00       		.byte	0
- 1081 04a5 0C       		.uleb128 0xc
- 1082 04a6 64010000 		.4byte	.LVL55
- 1083 04aa 6B050000 		.4byte	0x56b
- 1084 04ae B9040000 		.4byte	0x4b9
- 1085 04b2 0D       		.uleb128 0xd
- 1086 04b3 01       		.uleb128 0x1
- 1087 04b4 50       		.byte	0x50
- 1088 04b5 02       		.uleb128 0x2
- 1089 04b6 91       		.byte	0x91
- 1090 04b7 44       		.sleb128 -60
- 1091 04b8 00       		.byte	0
- 1092 04b9 0C       		.uleb128 0xc
- 1093 04ba 6C010000 		.4byte	.LVL58
- 1094 04be 6B050000 		.4byte	0x56b
- 1095 04c2 D0040000 		.4byte	0x4d0
- 1096 04c6 0D       		.uleb128 0xd
- 1097 04c7 01       		.uleb128 0x1
- 1098 04c8 50       		.byte	0x50
- 1099 04c9 05       		.uleb128 0x5
- 1100 04ca 03       		.byte	0x3
- 1101 04cb E4000000 		.4byte	.LC6
- 1102 04cf 00       		.byte	0
- 1103 04d0 0C       		.uleb128 0xc
- 1104 04d1 76010000 		.4byte	.LVL59
- 1105 04d5 97050000 		.4byte	0x597
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 26
+ 1057 04ae 7E050000 		.4byte	0x57e
+ 1058 04b2 CE040000 		.4byte	0x4ce
+ 1059 04b6 0F       		.uleb128 0xf
+ 1060 04b7 01       		.uleb128 0x1
+ 1061 04b8 50       		.byte	0x50
+ 1062 04b9 01       		.uleb128 0x1
+ 1063 04ba 48       		.byte	0x48
+ 1064 04bb 0F       		.uleb128 0xf
+ 1065 04bc 01       		.uleb128 0x1
+ 1066 04bd 51       		.byte	0x51
+ 1067 04be 02       		.uleb128 0x2
+ 1068 04bf 08       		.byte	0x8
+ 1069 04c0 28       		.byte	0x28
+ 1070 04c1 0F       		.uleb128 0xf
+ 1071 04c2 01       		.uleb128 0x1
+ 1072 04c3 52       		.byte	0x52
+ 1073 04c4 01       		.uleb128 0x1
+ 1074 04c5 36       		.byte	0x36
+ 1075 04c6 0F       		.uleb128 0xf
+ 1076 04c7 01       		.uleb128 0x1
+ 1077 04c8 53       		.byte	0x53
+ 1078 04c9 03       		.uleb128 0x3
+ 1079 04ca 91       		.byte	0x91
+ 1080 04cb B07F     		.sleb128 -80
+ 1081 04cd 00       		.byte	0
+ 1082 04ce 10       		.uleb128 0x10
+ 1083 04cf BC010000 		.4byte	.LVL63
+ 1084 04d3 89050000 		.4byte	0x589
+ 1085 04d7 0F       		.uleb128 0xf
+ 1086 04d8 01       		.uleb128 0x1
+ 1087 04d9 50       		.byte	0x50
+ 1088 04da 03       		.uleb128 0x3
+ 1089 04db 91       		.byte	0x91
+ 1090 04dc B87F     		.sleb128 -72
+ 1091 04de 0F       		.uleb128 0xf
+ 1092 04df 01       		.uleb128 0x1
+ 1093 04e0 51       		.byte	0x51
+ 1094 04e1 01       		.uleb128 0x1
+ 1095 04e2 38       		.byte	0x38
+ 1096 04e3 00       		.byte	0
+ 1097 04e4 00       		.byte	0
+ 1098 04e5 12       		.uleb128 0x12
+ 1099 04e6 C7000000 		.4byte	0xc7
+ 1100 04ea F5040000 		.4byte	0x4f5
+ 1101 04ee 13       		.uleb128 0x13
+ 1102 04ef F9000000 		.4byte	0xf9
+ 1103 04f3 31       		.byte	0x31
+ 1104 04f4 00       		.byte	0
+ 1105 04f5 12       		.uleb128 0x12
+ 1106 04f6 8C000000 		.4byte	0x8c
+ 1107 04fa 05050000 		.4byte	0x505
+ 1108 04fe 13       		.uleb128 0x13
+ 1109 04ff F9000000 		.4byte	0xf9
+ 1110 0503 07       		.byte	0x7
+ 1111 0504 00       		.byte	0
+ 1112 0505 12       		.uleb128 0x12
+ 1113 0506 8C000000 		.4byte	0x8c
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 26
 
 
- 1106 04d9 EF040000 		.4byte	0x4ef
- 1107 04dd 0D       		.uleb128 0xd
- 1108 04de 01       		.uleb128 0x1
- 1109 04df 50       		.byte	0x50
- 1110 04e0 01       		.uleb128 0x1
- 1111 04e1 48       		.byte	0x48
- 1112 04e2 0D       		.uleb128 0xd
- 1113 04e3 01       		.uleb128 0x1
- 1114 04e4 51       		.byte	0x51
- 1115 04e5 02       		.uleb128 0x2
- 1116 04e6 08       		.byte	0x8
- 1117 04e7 23       		.byte	0x23
- 1118 04e8 0D       		.uleb128 0xd
- 1119 04e9 01       		.uleb128 0x1
- 1120 04ea 52       		.byte	0x52
- 1121 04eb 02       		.uleb128 0x2
- 1122 04ec 7D       		.byte	0x7d
- 1123 04ed 00       		.sleb128 0
- 1124 04ee 00       		.byte	0
- 1125 04ef 0C       		.uleb128 0xc
- 1126 04f0 84010000 		.4byte	.LVL61
- 1127 04f4 60050000 		.4byte	0x560
- 1128 04f8 0C050000 		.4byte	0x50c
- 1129 04fc 0D       		.uleb128 0xd
- 1130 04fd 01       		.uleb128 0x1
- 1131 04fe 50       		.byte	0x50
- 1132 04ff 02       		.uleb128 0x2
- 1133 0500 91       		.byte	0x91
- 1134 0501 44       		.sleb128 -60
- 1135 0502 0D       		.uleb128 0xd
- 1136 0503 01       		.uleb128 0x1
- 1137 0504 51       		.byte	0x51
- 1138 0505 05       		.uleb128 0x5
- 1139 0506 03       		.byte	0x3
- 1140 0507 B8020000 		.4byte	.LC15
- 1141 050b 00       		.byte	0
- 1142 050c 0C       		.uleb128 0xc
- 1143 050d 8A010000 		.4byte	.LVL62
- 1144 0511 6B050000 		.4byte	0x56b
- 1145 0515 20050000 		.4byte	0x520
- 1146 0519 0D       		.uleb128 0xd
- 1147 051a 01       		.uleb128 0x1
- 1148 051b 50       		.byte	0x50
- 1149 051c 02       		.uleb128 0x2
- 1150 051d 91       		.byte	0x91
- 1151 051e 44       		.sleb128 -60
- 1152 051f 00       		.byte	0
- 1153 0520 0E       		.uleb128 0xe
- 1154 0521 92010000 		.4byte	.LVL65
- 1155 0525 6B050000 		.4byte	0x56b
- 1156 0529 0D       		.uleb128 0xd
- 1157 052a 01       		.uleb128 0x1
- 1158 052b 50       		.byte	0x50
- 1159 052c 05       		.uleb128 0x5
- 1160 052d 03       		.byte	0x3
- 1161 052e 40010000 		.4byte	.LC8
- 1162 0532 00       		.byte	0
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 27
+ 1114 050a 15050000 		.4byte	0x515
+ 1115 050e 13       		.uleb128 0x13
+ 1116 050f F9000000 		.4byte	0xf9
+ 1117 0513 05       		.byte	0x5
+ 1118 0514 00       		.byte	0
+ 1119 0515 14       		.uleb128 0x14
+ 1120 0516 45020000 		.4byte	.LASF51
+ 1121 051a 0A       		.byte	0xa
+ 1122 051b 1207     		.2byte	0x712
+ 1123 051d 21050000 		.4byte	0x521
+ 1124 0521 15       		.uleb128 0x15
+ 1125 0522 A2000000 		.4byte	0xa2
+ 1126 0526 16       		.uleb128 0x16
+ 1127 0527 6A000000 		.4byte	.LASF37
+ 1128 052b 6A000000 		.4byte	.LASF37
+ 1129 052f 06       		.byte	0x6
+ 1130 0530 5D       		.byte	0x5d
+ 1131 0531 16       		.uleb128 0x16
+ 1132 0532 05030000 		.4byte	.LASF38
+ 1133 0536 05030000 		.4byte	.LASF38
+ 1134 053a 07       		.byte	0x7
+ 1135 053b E7       		.byte	0xe7
+ 1136 053c 16       		.uleb128 0x16
+ 1137 053d 4B000000 		.4byte	.LASF39
+ 1138 0541 4B000000 		.4byte	.LASF39
+ 1139 0545 08       		.byte	0x8
+ 1140 0546 8B       		.byte	0x8b
+ 1141 0547 16       		.uleb128 0x16
+ 1142 0548 15030000 		.4byte	.LASF40
+ 1143 054c 15030000 		.4byte	.LASF40
+ 1144 0550 06       		.byte	0x6
+ 1145 0551 17       		.byte	0x17
+ 1146 0552 16       		.uleb128 0x16
+ 1147 0553 7E020000 		.4byte	.LASF41
+ 1148 0557 7E020000 		.4byte	.LASF41
+ 1149 055b 08       		.byte	0x8
+ 1150 055c 54       		.byte	0x54
+ 1151 055d 16       		.uleb128 0x16
+ 1152 055e 0D030000 		.4byte	.LASF42
+ 1153 0562 0D030000 		.4byte	.LASF42
+ 1154 0566 09       		.byte	0x9
+ 1155 0567 76       		.byte	0x76
+ 1156 0568 16       		.uleb128 0x16
+ 1157 0569 9B020000 		.4byte	.LASF43
+ 1158 056d 9B020000 		.4byte	.LASF43
+ 1159 0571 06       		.byte	0x6
+ 1160 0572 28       		.byte	0x28
+ 1161 0573 16       		.uleb128 0x16
+ 1162 0574 D1010000 		.4byte	.LASF44
+ 1163 0578 D1010000 		.4byte	.LASF44
+ 1164 057c 06       		.byte	0x6
+ 1165 057d 43       		.byte	0x43
+ 1166 057e 16       		.uleb128 0x16
+ 1167 057f B0010000 		.4byte	.LASF45
+ 1168 0583 B0010000 		.4byte	.LASF45
+ 1169 0587 06       		.byte	0x6
+ 1170 0588 36       		.byte	0x36
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 27
 
 
- 1163 0533 00       		.byte	0
- 1164 0534 10       		.uleb128 0x10
- 1165 0535 A5000000 		.4byte	0xa5
- 1166 0539 44050000 		.4byte	0x544
- 1167 053d 11       		.uleb128 0x11
- 1168 053e D7000000 		.4byte	0xd7
- 1169 0542 31       		.byte	0x31
- 1170 0543 00       		.byte	0
- 1171 0544 12       		.uleb128 0x12
- 1172 0545 53010000 		.4byte	.LASF39
- 1173 0549 09       		.byte	0x9
- 1174 054a 1207     		.2byte	0x712
- 1175 054c 50050000 		.4byte	0x550
- 1176 0550 13       		.uleb128 0x13
- 1177 0551 8C000000 		.4byte	0x8c
- 1178 0555 14       		.uleb128 0x14
- 1179 0556 4E000000 		.4byte	.LASF27
- 1180 055a 4E000000 		.4byte	.LASF27
- 1181 055e 05       		.byte	0x5
- 1182 055f 5D       		.byte	0x5d
- 1183 0560 14       		.uleb128 0x14
- 1184 0561 8A020000 		.4byte	.LASF28
- 1185 0565 8A020000 		.4byte	.LASF28
- 1186 0569 06       		.byte	0x6
- 1187 056a E7       		.byte	0xe7
- 1188 056b 14       		.uleb128 0x14
- 1189 056c 67010000 		.4byte	.LASF29
- 1190 0570 67010000 		.4byte	.LASF29
- 1191 0574 07       		.byte	0x7
- 1192 0575 8B       		.byte	0x8b
- 1193 0576 14       		.uleb128 0x14
- 1194 0577 9A020000 		.4byte	.LASF30
- 1195 057b 9A020000 		.4byte	.LASF30
- 1196 057f 05       		.byte	0x5
- 1197 0580 17       		.byte	0x17
- 1198 0581 14       		.uleb128 0x14
- 1199 0582 13020000 		.4byte	.LASF31
- 1200 0586 13020000 		.4byte	.LASF31
- 1201 058a 07       		.byte	0x7
- 1202 058b 54       		.byte	0x54
- 1203 058c 14       		.uleb128 0x14
- 1204 058d 92020000 		.4byte	.LASF32
- 1205 0591 92020000 		.4byte	.LASF32
- 1206 0595 08       		.byte	0x8
- 1207 0596 76       		.byte	0x76
- 1208 0597 14       		.uleb128 0x14
- 1209 0598 30020000 		.4byte	.LASF33
- 1210 059c 30020000 		.4byte	.LASF33
- 1211 05a0 05       		.byte	0x5
- 1212 05a1 28       		.byte	0x28
- 1213 05a2 14       		.uleb128 0x14
- 1214 05a3 7C010000 		.4byte	.LASF34
- 1215 05a7 7C010000 		.4byte	.LASF34
- 1216 05ab 05       		.byte	0x5
- 1217 05ac 43       		.byte	0x43
- 1218 05ad 00       		.byte	0
- 1219              		.section	.debug_abbrev,"",%progbits
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 28
+ 1171 0589 16       		.uleb128 0x16
+ 1172 058a 9E000000 		.4byte	.LASF46
+ 1173 058e 9E000000 		.4byte	.LASF46
+ 1174 0592 08       		.byte	0x8
+ 1175 0593 8C       		.byte	0x8c
+ 1176 0594 00       		.byte	0
+ 1177              		.section	.debug_abbrev,"",%progbits
+ 1178              	.Ldebug_abbrev0:
+ 1179 0000 01       		.uleb128 0x1
+ 1180 0001 11       		.uleb128 0x11
+ 1181 0002 01       		.byte	0x1
+ 1182 0003 25       		.uleb128 0x25
+ 1183 0004 0E       		.uleb128 0xe
+ 1184 0005 13       		.uleb128 0x13
+ 1185 0006 0B       		.uleb128 0xb
+ 1186 0007 03       		.uleb128 0x3
+ 1187 0008 0E       		.uleb128 0xe
+ 1188 0009 1B       		.uleb128 0x1b
+ 1189 000a 0E       		.uleb128 0xe
+ 1190 000b 55       		.uleb128 0x55
+ 1191 000c 17       		.uleb128 0x17
+ 1192 000d 11       		.uleb128 0x11
+ 1193 000e 01       		.uleb128 0x1
+ 1194 000f 10       		.uleb128 0x10
+ 1195 0010 17       		.uleb128 0x17
+ 1196 0011 00       		.byte	0
+ 1197 0012 00       		.byte	0
+ 1198 0013 02       		.uleb128 0x2
+ 1199 0014 24       		.uleb128 0x24
+ 1200 0015 00       		.byte	0
+ 1201 0016 0B       		.uleb128 0xb
+ 1202 0017 0B       		.uleb128 0xb
+ 1203 0018 3E       		.uleb128 0x3e
+ 1204 0019 0B       		.uleb128 0xb
+ 1205 001a 03       		.uleb128 0x3
+ 1206 001b 0E       		.uleb128 0xe
+ 1207 001c 00       		.byte	0
+ 1208 001d 00       		.byte	0
+ 1209 001e 03       		.uleb128 0x3
+ 1210 001f 16       		.uleb128 0x16
+ 1211 0020 00       		.byte	0
+ 1212 0021 03       		.uleb128 0x3
+ 1213 0022 0E       		.uleb128 0xe
+ 1214 0023 3A       		.uleb128 0x3a
+ 1215 0024 0B       		.uleb128 0xb
+ 1216 0025 3B       		.uleb128 0x3b
+ 1217 0026 0B       		.uleb128 0xb
+ 1218 0027 49       		.uleb128 0x49
+ 1219 0028 13       		.uleb128 0x13
+ 1220 0029 00       		.byte	0
+ 1221 002a 00       		.byte	0
+ 1222 002b 04       		.uleb128 0x4
+ 1223 002c 24       		.uleb128 0x24
+ 1224 002d 00       		.byte	0
+ 1225 002e 0B       		.uleb128 0xb
+ 1226 002f 0B       		.uleb128 0xb
+ 1227 0030 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 28
 
 
- 1220              	.Ldebug_abbrev0:
- 1221 0000 01       		.uleb128 0x1
- 1222 0001 11       		.uleb128 0x11
- 1223 0002 01       		.byte	0x1
- 1224 0003 25       		.uleb128 0x25
- 1225 0004 0E       		.uleb128 0xe
- 1226 0005 13       		.uleb128 0x13
- 1227 0006 0B       		.uleb128 0xb
- 1228 0007 03       		.uleb128 0x3
- 1229 0008 0E       		.uleb128 0xe
- 1230 0009 1B       		.uleb128 0x1b
- 1231 000a 0E       		.uleb128 0xe
- 1232 000b 55       		.uleb128 0x55
- 1233 000c 17       		.uleb128 0x17
- 1234 000d 11       		.uleb128 0x11
- 1235 000e 01       		.uleb128 0x1
- 1236 000f 10       		.uleb128 0x10
- 1237 0010 17       		.uleb128 0x17
- 1238 0011 00       		.byte	0
- 1239 0012 00       		.byte	0
- 1240 0013 02       		.uleb128 0x2
- 1241 0014 24       		.uleb128 0x24
- 1242 0015 00       		.byte	0
- 1243 0016 0B       		.uleb128 0xb
- 1244 0017 0B       		.uleb128 0xb
- 1245 0018 3E       		.uleb128 0x3e
- 1246 0019 0B       		.uleb128 0xb
- 1247 001a 03       		.uleb128 0x3
- 1248 001b 0E       		.uleb128 0xe
- 1249 001c 00       		.byte	0
- 1250 001d 00       		.byte	0
- 1251 001e 03       		.uleb128 0x3
- 1252 001f 16       		.uleb128 0x16
- 1253 0020 00       		.byte	0
- 1254 0021 03       		.uleb128 0x3
- 1255 0022 0E       		.uleb128 0xe
- 1256 0023 3A       		.uleb128 0x3a
- 1257 0024 0B       		.uleb128 0xb
- 1258 0025 3B       		.uleb128 0x3b
- 1259 0026 0B       		.uleb128 0xb
- 1260 0027 49       		.uleb128 0x49
- 1261 0028 13       		.uleb128 0x13
- 1262 0029 00       		.byte	0
- 1263 002a 00       		.byte	0
- 1264 002b 04       		.uleb128 0x4
- 1265 002c 24       		.uleb128 0x24
- 1266 002d 00       		.byte	0
- 1267 002e 0B       		.uleb128 0xb
- 1268 002f 0B       		.uleb128 0xb
- 1269 0030 3E       		.uleb128 0x3e
- 1270 0031 0B       		.uleb128 0xb
- 1271 0032 03       		.uleb128 0x3
- 1272 0033 08       		.uleb128 0x8
- 1273 0034 00       		.byte	0
- 1274 0035 00       		.byte	0
- 1275 0036 05       		.uleb128 0x5
- 1276 0037 04       		.uleb128 0x4
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 29
+ 1228 0031 0B       		.uleb128 0xb
+ 1229 0032 03       		.uleb128 0x3
+ 1230 0033 08       		.uleb128 0x8
+ 1231 0034 00       		.byte	0
+ 1232 0035 00       		.byte	0
+ 1233 0036 05       		.uleb128 0x5
+ 1234 0037 16       		.uleb128 0x16
+ 1235 0038 00       		.byte	0
+ 1236 0039 03       		.uleb128 0x3
+ 1237 003a 0E       		.uleb128 0xe
+ 1238 003b 3A       		.uleb128 0x3a
+ 1239 003c 0B       		.uleb128 0xb
+ 1240 003d 3B       		.uleb128 0x3b
+ 1241 003e 05       		.uleb128 0x5
+ 1242 003f 49       		.uleb128 0x49
+ 1243 0040 13       		.uleb128 0x13
+ 1244 0041 00       		.byte	0
+ 1245 0042 00       		.byte	0
+ 1246 0043 06       		.uleb128 0x6
+ 1247 0044 04       		.uleb128 0x4
+ 1248 0045 01       		.byte	0x1
+ 1249 0046 0B       		.uleb128 0xb
+ 1250 0047 0B       		.uleb128 0xb
+ 1251 0048 49       		.uleb128 0x49
+ 1252 0049 13       		.uleb128 0x13
+ 1253 004a 3A       		.uleb128 0x3a
+ 1254 004b 0B       		.uleb128 0xb
+ 1255 004c 3B       		.uleb128 0x3b
+ 1256 004d 0B       		.uleb128 0xb
+ 1257 004e 01       		.uleb128 0x1
+ 1258 004f 13       		.uleb128 0x13
+ 1259 0050 00       		.byte	0
+ 1260 0051 00       		.byte	0
+ 1261 0052 07       		.uleb128 0x7
+ 1262 0053 28       		.uleb128 0x28
+ 1263 0054 00       		.byte	0
+ 1264 0055 03       		.uleb128 0x3
+ 1265 0056 0E       		.uleb128 0xe
+ 1266 0057 1C       		.uleb128 0x1c
+ 1267 0058 0B       		.uleb128 0xb
+ 1268 0059 00       		.byte	0
+ 1269 005a 00       		.byte	0
+ 1270 005b 08       		.uleb128 0x8
+ 1271 005c 2E       		.uleb128 0x2e
+ 1272 005d 01       		.byte	0x1
+ 1273 005e 3F       		.uleb128 0x3f
+ 1274 005f 19       		.uleb128 0x19
+ 1275 0060 03       		.uleb128 0x3
+ 1276 0061 0E       		.uleb128 0xe
+ 1277 0062 3A       		.uleb128 0x3a
+ 1278 0063 0B       		.uleb128 0xb
+ 1279 0064 3B       		.uleb128 0x3b
+ 1280 0065 0B       		.uleb128 0xb
+ 1281 0066 27       		.uleb128 0x27
+ 1282 0067 19       		.uleb128 0x19
+ 1283 0068 49       		.uleb128 0x49
+ 1284 0069 13       		.uleb128 0x13
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 29
 
 
- 1277 0038 01       		.byte	0x1
- 1278 0039 0B       		.uleb128 0xb
- 1279 003a 0B       		.uleb128 0xb
- 1280 003b 49       		.uleb128 0x49
- 1281 003c 13       		.uleb128 0x13
- 1282 003d 3A       		.uleb128 0x3a
- 1283 003e 0B       		.uleb128 0xb
- 1284 003f 3B       		.uleb128 0x3b
- 1285 0040 0B       		.uleb128 0xb
- 1286 0041 01       		.uleb128 0x1
- 1287 0042 13       		.uleb128 0x13
- 1288 0043 00       		.byte	0
- 1289 0044 00       		.byte	0
- 1290 0045 06       		.uleb128 0x6
- 1291 0046 28       		.uleb128 0x28
- 1292 0047 00       		.byte	0
- 1293 0048 03       		.uleb128 0x3
- 1294 0049 0E       		.uleb128 0xe
- 1295 004a 1C       		.uleb128 0x1c
- 1296 004b 0B       		.uleb128 0xb
- 1297 004c 00       		.byte	0
- 1298 004d 00       		.byte	0
- 1299 004e 07       		.uleb128 0x7
- 1300 004f 2E       		.uleb128 0x2e
- 1301 0050 01       		.byte	0x1
- 1302 0051 3F       		.uleb128 0x3f
- 1303 0052 19       		.uleb128 0x19
- 1304 0053 03       		.uleb128 0x3
- 1305 0054 0E       		.uleb128 0xe
- 1306 0055 3A       		.uleb128 0x3a
- 1307 0056 0B       		.uleb128 0xb
- 1308 0057 3B       		.uleb128 0x3b
- 1309 0058 0B       		.uleb128 0xb
- 1310 0059 27       		.uleb128 0x27
- 1311 005a 19       		.uleb128 0x19
- 1312 005b 49       		.uleb128 0x49
- 1313 005c 13       		.uleb128 0x13
- 1314 005d 8701     		.uleb128 0x87
- 1315 005f 19       		.uleb128 0x19
- 1316 0060 11       		.uleb128 0x11
- 1317 0061 01       		.uleb128 0x1
- 1318 0062 12       		.uleb128 0x12
- 1319 0063 06       		.uleb128 0x6
- 1320 0064 40       		.uleb128 0x40
- 1321 0065 18       		.uleb128 0x18
- 1322 0066 9742     		.uleb128 0x2117
- 1323 0068 19       		.uleb128 0x19
- 1324 0069 01       		.uleb128 0x1
- 1325 006a 13       		.uleb128 0x13
- 1326 006b 00       		.byte	0
- 1327 006c 00       		.byte	0
- 1328 006d 08       		.uleb128 0x8
- 1329 006e 34       		.uleb128 0x34
- 1330 006f 00       		.byte	0
- 1331 0070 03       		.uleb128 0x3
- 1332 0071 0E       		.uleb128 0xe
- 1333 0072 3A       		.uleb128 0x3a
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 30
+ 1285 006a 8701     		.uleb128 0x87
+ 1286 006c 19       		.uleb128 0x19
+ 1287 006d 11       		.uleb128 0x11
+ 1288 006e 01       		.uleb128 0x1
+ 1289 006f 12       		.uleb128 0x12
+ 1290 0070 06       		.uleb128 0x6
+ 1291 0071 40       		.uleb128 0x40
+ 1292 0072 18       		.uleb128 0x18
+ 1293 0073 9742     		.uleb128 0x2117
+ 1294 0075 19       		.uleb128 0x19
+ 1295 0076 01       		.uleb128 0x1
+ 1296 0077 13       		.uleb128 0x13
+ 1297 0078 00       		.byte	0
+ 1298 0079 00       		.byte	0
+ 1299 007a 09       		.uleb128 0x9
+ 1300 007b 34       		.uleb128 0x34
+ 1301 007c 00       		.byte	0
+ 1302 007d 03       		.uleb128 0x3
+ 1303 007e 0E       		.uleb128 0xe
+ 1304 007f 3A       		.uleb128 0x3a
+ 1305 0080 0B       		.uleb128 0xb
+ 1306 0081 3B       		.uleb128 0x3b
+ 1307 0082 0B       		.uleb128 0xb
+ 1308 0083 49       		.uleb128 0x49
+ 1309 0084 13       		.uleb128 0x13
+ 1310 0085 02       		.uleb128 0x2
+ 1311 0086 18       		.uleb128 0x18
+ 1312 0087 00       		.byte	0
+ 1313 0088 00       		.byte	0
+ 1314 0089 0A       		.uleb128 0xa
+ 1315 008a 34       		.uleb128 0x34
+ 1316 008b 00       		.byte	0
+ 1317 008c 03       		.uleb128 0x3
+ 1318 008d 0E       		.uleb128 0xe
+ 1319 008e 3A       		.uleb128 0x3a
+ 1320 008f 0B       		.uleb128 0xb
+ 1321 0090 3B       		.uleb128 0x3b
+ 1322 0091 0B       		.uleb128 0xb
+ 1323 0092 49       		.uleb128 0x49
+ 1324 0093 13       		.uleb128 0x13
+ 1325 0094 02       		.uleb128 0x2
+ 1326 0095 17       		.uleb128 0x17
+ 1327 0096 00       		.byte	0
+ 1328 0097 00       		.byte	0
+ 1329 0098 0B       		.uleb128 0xb
+ 1330 0099 34       		.uleb128 0x34
+ 1331 009a 00       		.byte	0
+ 1332 009b 03       		.uleb128 0x3
+ 1333 009c 0E       		.uleb128 0xe
+ 1334 009d 3A       		.uleb128 0x3a
+ 1335 009e 0B       		.uleb128 0xb
+ 1336 009f 3B       		.uleb128 0x3b
+ 1337 00a0 0B       		.uleb128 0xb
+ 1338 00a1 49       		.uleb128 0x49
+ 1339 00a2 13       		.uleb128 0x13
+ 1340 00a3 1C       		.uleb128 0x1c
+ 1341 00a4 0D       		.uleb128 0xd
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 30
 
 
- 1334 0073 0B       		.uleb128 0xb
- 1335 0074 3B       		.uleb128 0x3b
- 1336 0075 0B       		.uleb128 0xb
- 1337 0076 49       		.uleb128 0x49
- 1338 0077 13       		.uleb128 0x13
- 1339 0078 02       		.uleb128 0x2
- 1340 0079 18       		.uleb128 0x18
- 1341 007a 00       		.byte	0
- 1342 007b 00       		.byte	0
- 1343 007c 09       		.uleb128 0x9
- 1344 007d 34       		.uleb128 0x34
- 1345 007e 00       		.byte	0
- 1346 007f 03       		.uleb128 0x3
- 1347 0080 0E       		.uleb128 0xe
- 1348 0081 3A       		.uleb128 0x3a
- 1349 0082 0B       		.uleb128 0xb
- 1350 0083 3B       		.uleb128 0x3b
- 1351 0084 0B       		.uleb128 0xb
- 1352 0085 49       		.uleb128 0x49
- 1353 0086 13       		.uleb128 0x13
- 1354 0087 02       		.uleb128 0x2
- 1355 0088 17       		.uleb128 0x17
- 1356 0089 00       		.byte	0
- 1357 008a 00       		.byte	0
- 1358 008b 0A       		.uleb128 0xa
- 1359 008c 0B       		.uleb128 0xb
- 1360 008d 01       		.byte	0x1
- 1361 008e 11       		.uleb128 0x11
- 1362 008f 01       		.uleb128 0x1
- 1363 0090 12       		.uleb128 0x12
- 1364 0091 06       		.uleb128 0x6
- 1365 0092 01       		.uleb128 0x1
- 1366 0093 13       		.uleb128 0x13
- 1367 0094 00       		.byte	0
- 1368 0095 00       		.byte	0
- 1369 0096 0B       		.uleb128 0xb
- 1370 0097 34       		.uleb128 0x34
- 1371 0098 00       		.byte	0
- 1372 0099 03       		.uleb128 0x3
- 1373 009a 08       		.uleb128 0x8
- 1374 009b 3A       		.uleb128 0x3a
- 1375 009c 0B       		.uleb128 0xb
- 1376 009d 3B       		.uleb128 0x3b
- 1377 009e 0B       		.uleb128 0xb
- 1378 009f 49       		.uleb128 0x49
- 1379 00a0 13       		.uleb128 0x13
- 1380 00a1 02       		.uleb128 0x2
- 1381 00a2 17       		.uleb128 0x17
- 1382 00a3 00       		.byte	0
- 1383 00a4 00       		.byte	0
- 1384 00a5 0C       		.uleb128 0xc
- 1385 00a6 898201   		.uleb128 0x4109
- 1386 00a9 01       		.byte	0x1
- 1387 00aa 11       		.uleb128 0x11
- 1388 00ab 01       		.uleb128 0x1
- 1389 00ac 31       		.uleb128 0x31
- 1390 00ad 13       		.uleb128 0x13
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 31
+ 1342 00a5 00       		.byte	0
+ 1343 00a6 00       		.byte	0
+ 1344 00a7 0C       		.uleb128 0xc
+ 1345 00a8 0B       		.uleb128 0xb
+ 1346 00a9 01       		.byte	0x1
+ 1347 00aa 11       		.uleb128 0x11
+ 1348 00ab 01       		.uleb128 0x1
+ 1349 00ac 12       		.uleb128 0x12
+ 1350 00ad 06       		.uleb128 0x6
+ 1351 00ae 01       		.uleb128 0x1
+ 1352 00af 13       		.uleb128 0x13
+ 1353 00b0 00       		.byte	0
+ 1354 00b1 00       		.byte	0
+ 1355 00b2 0D       		.uleb128 0xd
+ 1356 00b3 34       		.uleb128 0x34
+ 1357 00b4 00       		.byte	0
+ 1358 00b5 03       		.uleb128 0x3
+ 1359 00b6 08       		.uleb128 0x8
+ 1360 00b7 3A       		.uleb128 0x3a
+ 1361 00b8 0B       		.uleb128 0xb
+ 1362 00b9 3B       		.uleb128 0x3b
+ 1363 00ba 0B       		.uleb128 0xb
+ 1364 00bb 49       		.uleb128 0x49
+ 1365 00bc 13       		.uleb128 0x13
+ 1366 00bd 02       		.uleb128 0x2
+ 1367 00be 17       		.uleb128 0x17
+ 1368 00bf 00       		.byte	0
+ 1369 00c0 00       		.byte	0
+ 1370 00c1 0E       		.uleb128 0xe
+ 1371 00c2 898201   		.uleb128 0x4109
+ 1372 00c5 01       		.byte	0x1
+ 1373 00c6 11       		.uleb128 0x11
+ 1374 00c7 01       		.uleb128 0x1
+ 1375 00c8 31       		.uleb128 0x31
+ 1376 00c9 13       		.uleb128 0x13
+ 1377 00ca 01       		.uleb128 0x1
+ 1378 00cb 13       		.uleb128 0x13
+ 1379 00cc 00       		.byte	0
+ 1380 00cd 00       		.byte	0
+ 1381 00ce 0F       		.uleb128 0xf
+ 1382 00cf 8A8201   		.uleb128 0x410a
+ 1383 00d2 00       		.byte	0
+ 1384 00d3 02       		.uleb128 0x2
+ 1385 00d4 18       		.uleb128 0x18
+ 1386 00d5 9142     		.uleb128 0x2111
+ 1387 00d7 18       		.uleb128 0x18
+ 1388 00d8 00       		.byte	0
+ 1389 00d9 00       		.byte	0
+ 1390 00da 10       		.uleb128 0x10
+ 1391 00db 898201   		.uleb128 0x4109
+ 1392 00de 01       		.byte	0x1
+ 1393 00df 11       		.uleb128 0x11
+ 1394 00e0 01       		.uleb128 0x1
+ 1395 00e1 31       		.uleb128 0x31
+ 1396 00e2 13       		.uleb128 0x13
+ 1397 00e3 00       		.byte	0
+ 1398 00e4 00       		.byte	0
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 31
 
 
- 1391 00ae 01       		.uleb128 0x1
- 1392 00af 13       		.uleb128 0x13
- 1393 00b0 00       		.byte	0
- 1394 00b1 00       		.byte	0
- 1395 00b2 0D       		.uleb128 0xd
- 1396 00b3 8A8201   		.uleb128 0x410a
- 1397 00b6 00       		.byte	0
- 1398 00b7 02       		.uleb128 0x2
- 1399 00b8 18       		.uleb128 0x18
- 1400 00b9 9142     		.uleb128 0x2111
- 1401 00bb 18       		.uleb128 0x18
- 1402 00bc 00       		.byte	0
- 1403 00bd 00       		.byte	0
- 1404 00be 0E       		.uleb128 0xe
- 1405 00bf 898201   		.uleb128 0x4109
- 1406 00c2 01       		.byte	0x1
- 1407 00c3 11       		.uleb128 0x11
- 1408 00c4 01       		.uleb128 0x1
- 1409 00c5 31       		.uleb128 0x31
- 1410 00c6 13       		.uleb128 0x13
- 1411 00c7 00       		.byte	0
- 1412 00c8 00       		.byte	0
- 1413 00c9 0F       		.uleb128 0xf
- 1414 00ca 898201   		.uleb128 0x4109
- 1415 00cd 00       		.byte	0
- 1416 00ce 11       		.uleb128 0x11
- 1417 00cf 01       		.uleb128 0x1
- 1418 00d0 31       		.uleb128 0x31
- 1419 00d1 13       		.uleb128 0x13
- 1420 00d2 00       		.byte	0
- 1421 00d3 00       		.byte	0
- 1422 00d4 10       		.uleb128 0x10
- 1423 00d5 01       		.uleb128 0x1
- 1424 00d6 01       		.byte	0x1
- 1425 00d7 49       		.uleb128 0x49
- 1426 00d8 13       		.uleb128 0x13
- 1427 00d9 01       		.uleb128 0x1
- 1428 00da 13       		.uleb128 0x13
- 1429 00db 00       		.byte	0
- 1430 00dc 00       		.byte	0
- 1431 00dd 11       		.uleb128 0x11
- 1432 00de 21       		.uleb128 0x21
- 1433 00df 00       		.byte	0
- 1434 00e0 49       		.uleb128 0x49
- 1435 00e1 13       		.uleb128 0x13
- 1436 00e2 2F       		.uleb128 0x2f
- 1437 00e3 0B       		.uleb128 0xb
- 1438 00e4 00       		.byte	0
- 1439 00e5 00       		.byte	0
- 1440 00e6 12       		.uleb128 0x12
- 1441 00e7 34       		.uleb128 0x34
- 1442 00e8 00       		.byte	0
- 1443 00e9 03       		.uleb128 0x3
- 1444 00ea 0E       		.uleb128 0xe
- 1445 00eb 3A       		.uleb128 0x3a
- 1446 00ec 0B       		.uleb128 0xb
- 1447 00ed 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 32
+ 1399 00e5 11       		.uleb128 0x11
+ 1400 00e6 898201   		.uleb128 0x4109
+ 1401 00e9 00       		.byte	0
+ 1402 00ea 11       		.uleb128 0x11
+ 1403 00eb 01       		.uleb128 0x1
+ 1404 00ec 31       		.uleb128 0x31
+ 1405 00ed 13       		.uleb128 0x13
+ 1406 00ee 00       		.byte	0
+ 1407 00ef 00       		.byte	0
+ 1408 00f0 12       		.uleb128 0x12
+ 1409 00f1 01       		.uleb128 0x1
+ 1410 00f2 01       		.byte	0x1
+ 1411 00f3 49       		.uleb128 0x49
+ 1412 00f4 13       		.uleb128 0x13
+ 1413 00f5 01       		.uleb128 0x1
+ 1414 00f6 13       		.uleb128 0x13
+ 1415 00f7 00       		.byte	0
+ 1416 00f8 00       		.byte	0
+ 1417 00f9 13       		.uleb128 0x13
+ 1418 00fa 21       		.uleb128 0x21
+ 1419 00fb 00       		.byte	0
+ 1420 00fc 49       		.uleb128 0x49
+ 1421 00fd 13       		.uleb128 0x13
+ 1422 00fe 2F       		.uleb128 0x2f
+ 1423 00ff 0B       		.uleb128 0xb
+ 1424 0100 00       		.byte	0
+ 1425 0101 00       		.byte	0
+ 1426 0102 14       		.uleb128 0x14
+ 1427 0103 34       		.uleb128 0x34
+ 1428 0104 00       		.byte	0
+ 1429 0105 03       		.uleb128 0x3
+ 1430 0106 0E       		.uleb128 0xe
+ 1431 0107 3A       		.uleb128 0x3a
+ 1432 0108 0B       		.uleb128 0xb
+ 1433 0109 3B       		.uleb128 0x3b
+ 1434 010a 05       		.uleb128 0x5
+ 1435 010b 49       		.uleb128 0x49
+ 1436 010c 13       		.uleb128 0x13
+ 1437 010d 3F       		.uleb128 0x3f
+ 1438 010e 19       		.uleb128 0x19
+ 1439 010f 3C       		.uleb128 0x3c
+ 1440 0110 19       		.uleb128 0x19
+ 1441 0111 00       		.byte	0
+ 1442 0112 00       		.byte	0
+ 1443 0113 15       		.uleb128 0x15
+ 1444 0114 35       		.uleb128 0x35
+ 1445 0115 00       		.byte	0
+ 1446 0116 49       		.uleb128 0x49
+ 1447 0117 13       		.uleb128 0x13
+ 1448 0118 00       		.byte	0
+ 1449 0119 00       		.byte	0
+ 1450 011a 16       		.uleb128 0x16
+ 1451 011b 2E       		.uleb128 0x2e
+ 1452 011c 00       		.byte	0
+ 1453 011d 3F       		.uleb128 0x3f
+ 1454 011e 19       		.uleb128 0x19
+ 1455 011f 3C       		.uleb128 0x3c
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 32
 
 
- 1448 00ee 05       		.uleb128 0x5
- 1449 00ef 49       		.uleb128 0x49
- 1450 00f0 13       		.uleb128 0x13
- 1451 00f1 3F       		.uleb128 0x3f
- 1452 00f2 19       		.uleb128 0x19
- 1453 00f3 3C       		.uleb128 0x3c
- 1454 00f4 19       		.uleb128 0x19
- 1455 00f5 00       		.byte	0
- 1456 00f6 00       		.byte	0
- 1457 00f7 13       		.uleb128 0x13
- 1458 00f8 35       		.uleb128 0x35
- 1459 00f9 00       		.byte	0
- 1460 00fa 49       		.uleb128 0x49
- 1461 00fb 13       		.uleb128 0x13
- 1462 00fc 00       		.byte	0
- 1463 00fd 00       		.byte	0
- 1464 00fe 14       		.uleb128 0x14
- 1465 00ff 2E       		.uleb128 0x2e
- 1466 0100 00       		.byte	0
- 1467 0101 3F       		.uleb128 0x3f
- 1468 0102 19       		.uleb128 0x19
- 1469 0103 3C       		.uleb128 0x3c
- 1470 0104 19       		.uleb128 0x19
- 1471 0105 6E       		.uleb128 0x6e
- 1472 0106 0E       		.uleb128 0xe
- 1473 0107 03       		.uleb128 0x3
- 1474 0108 0E       		.uleb128 0xe
- 1475 0109 3A       		.uleb128 0x3a
- 1476 010a 0B       		.uleb128 0xb
- 1477 010b 3B       		.uleb128 0x3b
- 1478 010c 0B       		.uleb128 0xb
- 1479 010d 00       		.byte	0
- 1480 010e 00       		.byte	0
- 1481 010f 00       		.byte	0
- 1482              		.section	.debug_loc,"",%progbits
- 1483              	.Ldebug_loc0:
- 1484              	.LLST0:
- 1485 0000 42000000 		.4byte	.LVL8
- 1486 0004 4C000000 		.4byte	.LVL9
- 1487 0008 0100     		.2byte	0x1
- 1488 000a 50       		.byte	0x50
- 1489 000b 58000000 		.4byte	.LVL12
- 1490 000f 5A000000 		.4byte	.LVL13
- 1491 0013 0100     		.2byte	0x1
- 1492 0015 50       		.byte	0x50
- 1493 0016 6A000000 		.4byte	.LVL15
- 1494 001a 74000000 		.4byte	.LVL16
- 1495 001e 0100     		.2byte	0x1
- 1496 0020 50       		.byte	0x50
- 1497 0021 80000000 		.4byte	.LVL19
- 1498 0025 82000000 		.4byte	.LVL20
- 1499 0029 0100     		.2byte	0x1
- 1500 002b 50       		.byte	0x50
- 1501 002c 92000000 		.4byte	.LVL22
- 1502 0030 9C000000 		.4byte	.LVL23
- 1503 0034 0100     		.2byte	0x1
- 1504 0036 50       		.byte	0x50
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 33
+ 1456 0120 19       		.uleb128 0x19
+ 1457 0121 6E       		.uleb128 0x6e
+ 1458 0122 0E       		.uleb128 0xe
+ 1459 0123 03       		.uleb128 0x3
+ 1460 0124 0E       		.uleb128 0xe
+ 1461 0125 3A       		.uleb128 0x3a
+ 1462 0126 0B       		.uleb128 0xb
+ 1463 0127 3B       		.uleb128 0x3b
+ 1464 0128 0B       		.uleb128 0xb
+ 1465 0129 00       		.byte	0
+ 1466 012a 00       		.byte	0
+ 1467 012b 00       		.byte	0
+ 1468              		.section	.debug_loc,"",%progbits
+ 1469              	.Ldebug_loc0:
+ 1470              	.LLST0:
+ 1471 0000 42000000 		.4byte	.LVL8
+ 1472 0004 4C000000 		.4byte	.LVL9
+ 1473 0008 0100     		.2byte	0x1
+ 1474 000a 50       		.byte	0x50
+ 1475 000b 58000000 		.4byte	.LVL12
+ 1476 000f 5A000000 		.4byte	.LVL13
+ 1477 0013 0100     		.2byte	0x1
+ 1478 0015 50       		.byte	0x50
+ 1479 0016 6A000000 		.4byte	.LVL15
+ 1480 001a 74000000 		.4byte	.LVL16
+ 1481 001e 0100     		.2byte	0x1
+ 1482 0020 50       		.byte	0x50
+ 1483 0021 80000000 		.4byte	.LVL19
+ 1484 0025 82000000 		.4byte	.LVL20
+ 1485 0029 0100     		.2byte	0x1
+ 1486 002b 50       		.byte	0x50
+ 1487 002c 92000000 		.4byte	.LVL22
+ 1488 0030 9C000000 		.4byte	.LVL23
+ 1489 0034 0100     		.2byte	0x1
+ 1490 0036 50       		.byte	0x50
+ 1491 0037 A8000000 		.4byte	.LVL26
+ 1492 003b AA000000 		.4byte	.LVL27
+ 1493 003f 0100     		.2byte	0x1
+ 1494 0041 50       		.byte	0x50
+ 1495 0042 CA000000 		.4byte	.LVL30
+ 1496 0046 D4000000 		.4byte	.LVL31
+ 1497 004a 0100     		.2byte	0x1
+ 1498 004c 50       		.byte	0x50
+ 1499 004d E0000000 		.4byte	.LVL34
+ 1500 0051 E2000000 		.4byte	.LVL35
+ 1501 0055 0100     		.2byte	0x1
+ 1502 0057 50       		.byte	0x50
+ 1503 0058 02010000 		.4byte	.LVL38
+ 1504 005c 0C010000 		.4byte	.LVL39
+ 1505 0060 0100     		.2byte	0x1
+ 1506 0062 50       		.byte	0x50
+ 1507 0063 18010000 		.4byte	.LVL42
+ 1508 0067 1A010000 		.4byte	.LVL43
+ 1509 006b 0100     		.2byte	0x1
+ 1510 006d 50       		.byte	0x50
+ 1511 006e 36010000 		.4byte	.LVL45
+ 1512 0072 52010000 		.4byte	.LVL46
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 33
 
 
- 1505 0037 A8000000 		.4byte	.LVL26
- 1506 003b AA000000 		.4byte	.LVL27
- 1507 003f 0100     		.2byte	0x1
- 1508 0041 50       		.byte	0x50
- 1509 0042 B8000000 		.4byte	.LVL29
- 1510 0046 C2000000 		.4byte	.LVL30
- 1511 004a 0100     		.2byte	0x1
- 1512 004c 50       		.byte	0x50
- 1513 004d CE000000 		.4byte	.LVL33
- 1514 0051 D0000000 		.4byte	.LVL34
- 1515 0055 0100     		.2byte	0x1
- 1516 0057 50       		.byte	0x50
- 1517 0058 F0000000 		.4byte	.LVL37
- 1518 005c FA000000 		.4byte	.LVL38
- 1519 0060 0100     		.2byte	0x1
- 1520 0062 50       		.byte	0x50
- 1521 0063 06010000 		.4byte	.LVL41
- 1522 0067 08010000 		.4byte	.LVL42
- 1523 006b 0100     		.2byte	0x1
- 1524 006d 50       		.byte	0x50
- 1525 006e 28010000 		.4byte	.LVL45
- 1526 0072 32010000 		.4byte	.LVL46
- 1527 0076 0100     		.2byte	0x1
- 1528 0078 50       		.byte	0x50
- 1529 0079 3E010000 		.4byte	.LVL49
- 1530 007d 40010000 		.4byte	.LVL50
- 1531 0081 0100     		.2byte	0x1
- 1532 0083 50       		.byte	0x50
- 1533 0084 50010000 		.4byte	.LVL52
- 1534 0088 5A010000 		.4byte	.LVL53
- 1535 008c 0100     		.2byte	0x1
- 1536 008e 50       		.byte	0x50
- 1537 008f 66010000 		.4byte	.LVL56
- 1538 0093 68010000 		.4byte	.LVL57
- 1539 0097 0100     		.2byte	0x1
- 1540 0099 50       		.byte	0x50
- 1541 009a 76010000 		.4byte	.LVL59
- 1542 009e 80010000 		.4byte	.LVL60
- 1543 00a2 0100     		.2byte	0x1
- 1544 00a4 50       		.byte	0x50
- 1545 00a5 8C010000 		.4byte	.LVL63
- 1546 00a9 8E010000 		.4byte	.LVL64
- 1547 00ad 0100     		.2byte	0x1
- 1548 00af 50       		.byte	0x50
- 1549 00b0 00000000 		.4byte	0
- 1550 00b4 00000000 		.4byte	0
- 1551              	.LLST1:
- 1552 00b8 14000000 		.4byte	.LVL2
- 1553 00bc 18000000 		.4byte	.LVL3
- 1554 00c0 0200     		.2byte	0x2
- 1555 00c2 30       		.byte	0x30
- 1556 00c3 9F       		.byte	0x9f
- 1557 00c4 18000000 		.4byte	.LVL3
- 1558 00c8 D4010000 		.4byte	.LFE64
- 1559 00cc 0100     		.2byte	0x1
- 1560 00ce 54       		.byte	0x54
- 1561 00cf 00000000 		.4byte	0
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 34
+ 1513 0076 0100     		.2byte	0x1
+ 1514 0078 50       		.byte	0x50
+ 1515 0079 56010000 		.4byte	.LVL47
+ 1516 007d B8010000 		.4byte	.LVL62
+ 1517 0081 0100     		.2byte	0x1
+ 1518 0083 50       		.byte	0x50
+ 1519 0084 00000000 		.4byte	0
+ 1520 0088 00000000 		.4byte	0
+ 1521              	.LLST1:
+ 1522 008c 6A010000 		.4byte	.LVL48
+ 1523 0090 6C010000 		.4byte	.LVL49
+ 1524 0094 0100     		.2byte	0x1
+ 1525 0096 53       		.byte	0x53
+ 1526 0097 6C010000 		.4byte	.LVL49
+ 1527 009b 6E010000 		.4byte	.LVL50
+ 1528 009f 1400     		.2byte	0x14
+ 1529 00a1 72       		.byte	0x72
+ 1530 00a2 00       		.sleb128 0
+ 1531 00a3 38       		.byte	0x38
+ 1532 00a4 24       		.byte	0x24
+ 1533 00a5 91       		.byte	0x91
+ 1534 00a6 B07F     		.sleb128 -80
+ 1535 00a8 94       		.byte	0x94
+ 1536 00a9 01       		.byte	0x1
+ 1537 00aa 08       		.byte	0x8
+ 1538 00ab FF       		.byte	0xff
+ 1539 00ac 1A       		.byte	0x1a
+ 1540 00ad 21       		.byte	0x21
+ 1541 00ae 09       		.byte	0x9
+ 1542 00af F4       		.byte	0xf4
+ 1543 00b0 24       		.byte	0x24
+ 1544 00b1 09       		.byte	0x9
+ 1545 00b2 F8       		.byte	0xf8
+ 1546 00b3 26       		.byte	0x26
+ 1547 00b4 9F       		.byte	0x9f
+ 1548 00b5 6E010000 		.4byte	.LVL50
+ 1549 00b9 74010000 		.4byte	.LVL51
+ 1550 00bd 0100     		.2byte	0x1
+ 1551 00bf 53       		.byte	0x53
+ 1552 00c0 74010000 		.4byte	.LVL51
+ 1553 00c4 80010000 		.4byte	.LVL52
+ 1554 00c8 1600     		.2byte	0x16
+ 1555 00ca 72       		.byte	0x72
+ 1556 00cb 00       		.sleb128 0
+ 1557 00cc 38       		.byte	0x38
+ 1558 00cd 24       		.byte	0x24
+ 1559 00ce 91       		.byte	0x91
+ 1560 00cf B07F     		.sleb128 -80
+ 1561 00d1 94       		.byte	0x94
+ 1562 00d2 01       		.byte	0x1
+ 1563 00d3 08       		.byte	0x8
+ 1564 00d4 FF       		.byte	0xff
+ 1565 00d5 1A       		.byte	0x1a
+ 1566 00d6 21       		.byte	0x21
+ 1567 00d7 09       		.byte	0x9
+ 1568 00d8 F4       		.byte	0xf4
+ 1569 00d9 24       		.byte	0x24
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 34
 
 
- 1562 00d3 00000000 		.4byte	0
- 1563              		.section	.debug_aranges,"",%progbits
- 1564 0000 1C000000 		.4byte	0x1c
- 1565 0004 0200     		.2byte	0x2
- 1566 0006 00000000 		.4byte	.Ldebug_info0
- 1567 000a 04       		.byte	0x4
- 1568 000b 00       		.byte	0
- 1569 000c 0000     		.2byte	0
- 1570 000e 0000     		.2byte	0
- 1571 0010 00000000 		.4byte	.LFB64
- 1572 0014 D4010000 		.4byte	.LFE64-.LFB64
- 1573 0018 00000000 		.4byte	0
- 1574 001c 00000000 		.4byte	0
- 1575              		.section	.debug_ranges,"",%progbits
- 1576              	.Ldebug_ranges0:
- 1577 0000 00000000 		.4byte	.LFB64
- 1578 0004 D4010000 		.4byte	.LFE64
- 1579 0008 00000000 		.4byte	0
- 1580 000c 00000000 		.4byte	0
- 1581              		.section	.debug_line,"",%progbits
- 1582              	.Ldebug_line0:
- 1583 0000 4C020000 		.section	.debug_str,"MS",%progbits,1
- 1583      0200F001 
- 1583      00000201 
- 1583      FB0E0D00 
- 1583      01010101 
- 1584              	.LASF21:
- 1585 0000 6D657373 		.ascii	"message\000"
- 1585      61676500 
- 1586              	.LASF4:
- 1587 0008 5F5F7569 		.ascii	"__uint8_t\000"
- 1587      6E74385F 
- 1587      7400
- 1588              	.LASF37:
- 1589 0012 433A5C55 		.ascii	"C:\\Users\\aless\\Desktop\\PSoC_03\\AY1920_II_HW_05"
- 1589      73657273 
- 1589      5C616C65 
- 1589      73735C44 
- 1589      65736B74 
- 1590 0040 5F50524F 		.ascii	"_PROJ_3.cydsn\000"
- 1590      4A5F332E 
- 1590      63796473 
- 1590      6E00
- 1591              	.LASF27:
- 1592 004e 4932435F 		.ascii	"I2C_Peripheral_IsDeviceConnected\000"
- 1592      50657269 
- 1592      70686572 
- 1592      616C5F49 
- 1592      73446576 
- 1593              	.LASF5:
- 1594 006f 5F5F696E 		.ascii	"__int32_t\000"
- 1594      7433325F 
- 1594      7400
- 1595              	.LASF6:
- 1596 0079 6C6F6E67 		.ascii	"long int\000"
- 1596      20696E74 
- 1596      00
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 35
+ 1570 00da 09       		.byte	0x9
+ 1571 00db F8       		.byte	0xf8
+ 1572 00dc 26       		.byte	0x26
+ 1573 00dd 31       		.byte	0x31
+ 1574 00de 24       		.byte	0x24
+ 1575 00df 9F       		.byte	0x9f
+ 1576 00e0 80010000 		.4byte	.LVL52
+ 1577 00e4 BB010000 		.4byte	.LVL63-1
+ 1578 00e8 1C00     		.2byte	0x1c
+ 1579 00ea 91       		.byte	0x91
+ 1580 00eb B17F     		.sleb128 -79
+ 1581 00ed 94       		.byte	0x94
+ 1582 00ee 01       		.byte	0x1
+ 1583 00ef 08       		.byte	0x8
+ 1584 00f0 FF       		.byte	0xff
+ 1585 00f1 1A       		.byte	0x1a
+ 1586 00f2 38       		.byte	0x38
+ 1587 00f3 24       		.byte	0x24
+ 1588 00f4 91       		.byte	0x91
+ 1589 00f5 B07F     		.sleb128 -80
+ 1590 00f7 94       		.byte	0x94
+ 1591 00f8 01       		.byte	0x1
+ 1592 00f9 08       		.byte	0x8
+ 1593 00fa FF       		.byte	0xff
+ 1594 00fb 1A       		.byte	0x1a
+ 1595 00fc 21       		.byte	0x21
+ 1596 00fd 09       		.byte	0x9
+ 1597 00fe F4       		.byte	0xf4
+ 1598 00ff 24       		.byte	0x24
+ 1599 0100 09       		.byte	0x9
+ 1600 0101 F8       		.byte	0xf8
+ 1601 0102 26       		.byte	0x26
+ 1602 0103 31       		.byte	0x31
+ 1603 0104 24       		.byte	0x24
+ 1604 0105 9F       		.byte	0x9f
+ 1605 0106 00000000 		.4byte	0
+ 1606 010a 00000000 		.4byte	0
+ 1607              	.LLST2:
+ 1608 010e 88010000 		.4byte	.LVL53
+ 1609 0112 8A010000 		.4byte	.LVL54
+ 1610 0116 0100     		.2byte	0x1
+ 1611 0118 53       		.byte	0x53
+ 1612 0119 8A010000 		.4byte	.LVL54
+ 1613 011d 8C010000 		.4byte	.LVL55
+ 1614 0121 1400     		.2byte	0x14
+ 1615 0123 72       		.byte	0x72
+ 1616 0124 00       		.sleb128 0
+ 1617 0125 38       		.byte	0x38
+ 1618 0126 24       		.byte	0x24
+ 1619 0127 91       		.byte	0x91
+ 1620 0128 B27F     		.sleb128 -78
+ 1621 012a 94       		.byte	0x94
+ 1622 012b 01       		.byte	0x1
+ 1623 012c 08       		.byte	0x8
+ 1624 012d FF       		.byte	0xff
+ 1625 012e 1A       		.byte	0x1a
+ 1626 012f 21       		.byte	0x21
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 35
 
 
- 1597              	.LASF18:
- 1598 0082 4572726F 		.ascii	"ErrorCode\000"
- 1598      72436F64 
- 1598      6500
- 1599              	.LASF13:
- 1600 008c 666C6F61 		.ascii	"float\000"
- 1600      7400
- 1601              	.LASF1:
- 1602 0092 756E7369 		.ascii	"unsigned char\000"
- 1602      676E6564 
- 1602      20636861 
- 1602      7200
- 1603              	.LASF35:
- 1604 00a0 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1604      43313120 
- 1604      352E342E 
- 1604      31203230 
- 1604      31363036 
- 1605 00d3 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1605      20726576 
- 1605      6973696F 
- 1605      6E203233 
- 1605      37373135 
- 1606 0106 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
- 1606      66756E63 
- 1606      74696F6E 
- 1606      2D736563 
- 1606      74696F6E 
- 1607              	.LASF7:
- 1608 012e 6C6F6E67 		.ascii	"long unsigned int\000"
- 1608      20756E73 
- 1608      69676E65 
- 1608      6420696E 
- 1608      7400
- 1609              	.LASF3:
- 1610 0140 73686F72 		.ascii	"short unsigned int\000"
- 1610      7420756E 
- 1610      7369676E 
- 1610      65642069 
- 1610      6E7400
- 1611              	.LASF39:
- 1612 0153 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1612      52784275 
- 1612      66666572 
- 1612      00
- 1613              	.LASF14:
- 1614 0160 646F7562 		.ascii	"double\000"
- 1614      6C6500
- 1615              	.LASF29:
- 1616 0167 55415254 		.ascii	"UART_Debug_PutString\000"
- 1616      5F446562 
- 1616      75675F50 
- 1616      75745374 
- 1616      72696E67 
- 1617              	.LASF34:
- 1618 017c 4932435F 		.ascii	"I2C_Peripheral_WriteRegister\000"
- 1618      50657269 
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 36
+ 1627 0130 09       		.byte	0x9
+ 1628 0131 F4       		.byte	0xf4
+ 1629 0132 24       		.byte	0x24
+ 1630 0133 09       		.byte	0x9
+ 1631 0134 F8       		.byte	0xf8
+ 1632 0135 26       		.byte	0x26
+ 1633 0136 9F       		.byte	0x9f
+ 1634 0137 8C010000 		.4byte	.LVL55
+ 1635 013b 92010000 		.4byte	.LVL56
+ 1636 013f 0100     		.2byte	0x1
+ 1637 0141 53       		.byte	0x53
+ 1638 0142 92010000 		.4byte	.LVL56
+ 1639 0146 9E010000 		.4byte	.LVL57
+ 1640 014a 1600     		.2byte	0x16
+ 1641 014c 72       		.byte	0x72
+ 1642 014d 00       		.sleb128 0
+ 1643 014e 38       		.byte	0x38
+ 1644 014f 24       		.byte	0x24
+ 1645 0150 91       		.byte	0x91
+ 1646 0151 B27F     		.sleb128 -78
+ 1647 0153 94       		.byte	0x94
+ 1648 0154 01       		.byte	0x1
+ 1649 0155 08       		.byte	0x8
+ 1650 0156 FF       		.byte	0xff
+ 1651 0157 1A       		.byte	0x1a
+ 1652 0158 21       		.byte	0x21
+ 1653 0159 09       		.byte	0x9
+ 1654 015a F4       		.byte	0xf4
+ 1655 015b 24       		.byte	0x24
+ 1656 015c 09       		.byte	0x9
+ 1657 015d F8       		.byte	0xf8
+ 1658 015e 26       		.byte	0x26
+ 1659 015f 31       		.byte	0x31
+ 1660 0160 24       		.byte	0x24
+ 1661 0161 9F       		.byte	0x9f
+ 1662 0162 9E010000 		.4byte	.LVL57
+ 1663 0166 BB010000 		.4byte	.LVL63-1
+ 1664 016a 1C00     		.2byte	0x1c
+ 1665 016c 91       		.byte	0x91
+ 1666 016d B37F     		.sleb128 -77
+ 1667 016f 94       		.byte	0x94
+ 1668 0170 01       		.byte	0x1
+ 1669 0171 08       		.byte	0x8
+ 1670 0172 FF       		.byte	0xff
+ 1671 0173 1A       		.byte	0x1a
+ 1672 0174 38       		.byte	0x38
+ 1673 0175 24       		.byte	0x24
+ 1674 0176 91       		.byte	0x91
+ 1675 0177 B27F     		.sleb128 -78
+ 1676 0179 94       		.byte	0x94
+ 1677 017a 01       		.byte	0x1
+ 1678 017b 08       		.byte	0x8
+ 1679 017c FF       		.byte	0xff
+ 1680 017d 1A       		.byte	0x1a
+ 1681 017e 21       		.byte	0x21
+ 1682 017f 09       		.byte	0x9
+ 1683 0180 F4       		.byte	0xf4
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 36
 
 
- 1618      70686572 
- 1618      616C5F57 
- 1618      72697465 
- 1619              	.LASF38:
- 1620 0199 6D61696E 		.ascii	"main\000"
- 1620      00
- 1621              	.LASF25:
- 1622 019e 6374726C 		.ascii	"ctrl_reg1\000"
- 1622      5F726567 
- 1622      3100
- 1623              	.LASF26:
- 1624 01a8 6374726C 		.ascii	"ctrl_reg4\000"
- 1624      5F726567 
- 1624      3400
- 1625              	.LASF10:
- 1626 01b2 756E7369 		.ascii	"unsigned int\000"
- 1626      676E6564 
- 1626      20696E74 
- 1626      00
- 1627              	.LASF9:
- 1628 01bf 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1628      206C6F6E 
- 1628      6720756E 
- 1628      7369676E 
- 1628      65642069 
- 1629              	.LASF11:
- 1630 01d6 75696E74 		.ascii	"uint8_t\000"
- 1630      385F7400 
- 1631              	.LASF24:
- 1632 01de 73746174 		.ascii	"status_register\000"
- 1632      75735F72 
- 1632      65676973 
- 1632      74657200 
- 1633              	.LASF12:
- 1634 01ee 696E7433 		.ascii	"int32_t\000"
- 1634      325F7400 
- 1635              	.LASF20:
- 1636 01f6 73697A65 		.ascii	"sizetype\000"
- 1636      74797065 
- 1636      00
- 1637              	.LASF23:
- 1638 01ff 6572726F 		.ascii	"error\000"
- 1638      7200
- 1639              	.LASF8:
- 1640 0205 6C6F6E67 		.ascii	"long long int\000"
- 1640      206C6F6E 
- 1640      6720696E 
- 1640      7400
- 1641              	.LASF31:
- 1642 0213 55415254 		.ascii	"UART_Debug_Start\000"
- 1642      5F446562 
- 1642      75675F53 
- 1642      74617274 
- 1642      00
- 1643              	.LASF36:
- 1644 0224 6D61696E 		.ascii	"main.c\000"
- 1644      2E6300
-ARM GAS  C:\Users\aless\AppData\Local\Temp\cc7GeC6j.s 			page 37
+ 1684 0181 24       		.byte	0x24
+ 1685 0182 09       		.byte	0x9
+ 1686 0183 F8       		.byte	0xf8
+ 1687 0184 26       		.byte	0x26
+ 1688 0185 31       		.byte	0x31
+ 1689 0186 24       		.byte	0x24
+ 1690 0187 9F       		.byte	0x9f
+ 1691 0188 00000000 		.4byte	0
+ 1692 018c 00000000 		.4byte	0
+ 1693              	.LLST3:
+ 1694 0190 A6010000 		.4byte	.LVL58
+ 1695 0194 A8010000 		.4byte	.LVL59
+ 1696 0198 0100     		.2byte	0x1
+ 1697 019a 53       		.byte	0x53
+ 1698 019b A8010000 		.4byte	.LVL59
+ 1699 019f AA010000 		.4byte	.LVL60
+ 1700 01a3 1400     		.2byte	0x14
+ 1701 01a5 72       		.byte	0x72
+ 1702 01a6 00       		.sleb128 0
+ 1703 01a7 38       		.byte	0x38
+ 1704 01a8 24       		.byte	0x24
+ 1705 01a9 91       		.byte	0x91
+ 1706 01aa B47F     		.sleb128 -76
+ 1707 01ac 94       		.byte	0x94
+ 1708 01ad 01       		.byte	0x1
+ 1709 01ae 08       		.byte	0x8
+ 1710 01af FF       		.byte	0xff
+ 1711 01b0 1A       		.byte	0x1a
+ 1712 01b1 21       		.byte	0x21
+ 1713 01b2 09       		.byte	0x9
+ 1714 01b3 F4       		.byte	0xf4
+ 1715 01b4 24       		.byte	0x24
+ 1716 01b5 09       		.byte	0x9
+ 1717 01b6 F8       		.byte	0xf8
+ 1718 01b7 26       		.byte	0x26
+ 1719 01b8 9F       		.byte	0x9f
+ 1720 01b9 AA010000 		.4byte	.LVL60
+ 1721 01bd B0010000 		.4byte	.LVL61
+ 1722 01c1 0100     		.2byte	0x1
+ 1723 01c3 53       		.byte	0x53
+ 1724 01c4 B0010000 		.4byte	.LVL61
+ 1725 01c8 BB010000 		.4byte	.LVL63-1
+ 1726 01cc 1600     		.2byte	0x16
+ 1727 01ce 72       		.byte	0x72
+ 1728 01cf 00       		.sleb128 0
+ 1729 01d0 38       		.byte	0x38
+ 1730 01d1 24       		.byte	0x24
+ 1731 01d2 91       		.byte	0x91
+ 1732 01d3 B47F     		.sleb128 -76
+ 1733 01d5 94       		.byte	0x94
+ 1734 01d6 01       		.byte	0x1
+ 1735 01d7 08       		.byte	0x8
+ 1736 01d8 FF       		.byte	0xff
+ 1737 01d9 1A       		.byte	0x1a
+ 1738 01da 21       		.byte	0x21
+ 1739 01db 09       		.byte	0x9
+ 1740 01dc F4       		.byte	0xf4
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 37
 
 
- 1645              	.LASF15:
- 1646 022b 63686172 		.ascii	"char\000"
- 1646      00
- 1647              	.LASF33:
- 1648 0230 4932435F 		.ascii	"I2C_Peripheral_ReadRegister\000"
- 1648      50657269 
- 1648      70686572 
- 1648      616C5F52 
- 1648      65616452 
- 1649              	.LASF2:
- 1650 024c 73686F72 		.ascii	"short int\000"
- 1650      7420696E 
- 1650      7400
- 1651              	.LASF16:
- 1652 0256 4E4F5F45 		.ascii	"NO_ERROR\000"
- 1652      52524F52 
- 1652      00
- 1653              	.LASF17:
- 1654 025f 4552524F 		.ascii	"ERROR\000"
- 1654      5200
- 1655              	.LASF19:
- 1656 0265 6C6F6E67 		.ascii	"long double\000"
- 1656      20646F75 
- 1656      626C6500 
- 1657              	.LASF0:
- 1658 0271 7369676E 		.ascii	"signed char\000"
- 1658      65642063 
- 1658      68617200 
- 1659              	.LASF22:
- 1660 027d 77686F5F 		.ascii	"who_am_i_reg\000"
- 1660      616D5F69 
- 1660      5F726567 
- 1660      00
- 1661              	.LASF28:
- 1662 028a 73707269 		.ascii	"sprintf\000"
- 1662      6E746600 
- 1663              	.LASF32:
- 1664 0292 43794465 		.ascii	"CyDelay\000"
- 1664      6C617900 
- 1665              	.LASF30:
- 1666 029a 4932435F 		.ascii	"I2C_Peripheral_Start\000"
- 1666      50657269 
- 1666      70686572 
- 1666      616C5F53 
- 1666      74617274 
- 1667              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 1741 01dd 24       		.byte	0x24
+ 1742 01de 09       		.byte	0x9
+ 1743 01df F8       		.byte	0xf8
+ 1744 01e0 26       		.byte	0x26
+ 1745 01e1 31       		.byte	0x31
+ 1746 01e2 24       		.byte	0x24
+ 1747 01e3 9F       		.byte	0x9f
+ 1748 01e4 00000000 		.4byte	0
+ 1749 01e8 00000000 		.4byte	0
+ 1750              	.LLST4:
+ 1751 01ec 14000000 		.4byte	.LVL2
+ 1752 01f0 18000000 		.4byte	.LVL3
+ 1753 01f4 0200     		.2byte	0x2
+ 1754 01f6 30       		.byte	0x30
+ 1755 01f7 9F       		.byte	0x9f
+ 1756 01f8 18000000 		.4byte	.LVL3
+ 1757 01fc F0010000 		.4byte	.LFE64
+ 1758 0200 0100     		.2byte	0x1
+ 1759 0202 54       		.byte	0x54
+ 1760 0203 00000000 		.4byte	0
+ 1761 0207 00000000 		.4byte	0
+ 1762              		.section	.debug_aranges,"",%progbits
+ 1763 0000 1C000000 		.4byte	0x1c
+ 1764 0004 0200     		.2byte	0x2
+ 1765 0006 00000000 		.4byte	.Ldebug_info0
+ 1766 000a 04       		.byte	0x4
+ 1767 000b 00       		.byte	0
+ 1768 000c 0000     		.2byte	0
+ 1769 000e 0000     		.2byte	0
+ 1770 0010 00000000 		.4byte	.LFB64
+ 1771 0014 F0010000 		.4byte	.LFE64-.LFB64
+ 1772 0018 00000000 		.4byte	0
+ 1773 001c 00000000 		.4byte	0
+ 1774              		.section	.debug_ranges,"",%progbits
+ 1775              	.Ldebug_ranges0:
+ 1776 0000 00000000 		.4byte	.LFB64
+ 1777 0004 F0010000 		.4byte	.LFE64
+ 1778 0008 00000000 		.4byte	0
+ 1779 000c 00000000 		.4byte	0
+ 1780              		.section	.debug_line,"",%progbits
+ 1781              	.Ldebug_line0:
+ 1782 0000 65020000 		.section	.debug_str,"MS",%progbits,1
+ 1782      0200FD01 
+ 1782      00000201 
+ 1782      FB0E0D00 
+ 1782      01010101 
+ 1783              	.LASF24:
+ 1784 0000 6D657373 		.ascii	"message\000"
+ 1784      61676500 
+ 1785              	.LASF32:
+ 1786 0008 68656164 		.ascii	"header\000"
+ 1786      657200
+ 1787              	.LASF49:
+ 1788 000f 433A5C55 		.ascii	"C:\\Users\\aless\\Desktop\\PSoC_03\\AY1920_II_HW_05"
+ 1788      73657273 
+ 1788      5C616C65 
+ 1788      73735C44 
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 38
+
+
+ 1788      65736B74 
+ 1789 003d 5F50524F 		.ascii	"_PROJ_3.cydsn\000"
+ 1789      4A5F332E 
+ 1789      63796473 
+ 1789      6E00
+ 1790              	.LASF39:
+ 1791 004b 55415254 		.ascii	"UART_Debug_PutString\000"
+ 1791      5F446562 
+ 1791      75675F50 
+ 1791      75745374 
+ 1791      72696E67 
+ 1792              	.LASF2:
+ 1793 0060 5F5F7569 		.ascii	"__uint8_t\000"
+ 1793      6E74385F 
+ 1793      7400
+ 1794              	.LASF37:
+ 1795 006a 4932435F 		.ascii	"I2C_Peripheral_IsDeviceConnected\000"
+ 1795      50657269 
+ 1795      70686572 
+ 1795      616C5F49 
+ 1795      73446576 
+ 1796              	.LASF6:
+ 1797 008b 5F5F696E 		.ascii	"__int32_t\000"
+ 1797      7433325F 
+ 1797      7400
+ 1798              	.LASF7:
+ 1799 0095 6C6F6E67 		.ascii	"long int\000"
+ 1799      20696E74 
+ 1799      00
+ 1800              	.LASF46:
+ 1801 009e 55415254 		.ascii	"UART_Debug_PutArray\000"
+ 1801      5F446562 
+ 1801      75675F50 
+ 1801      75744172 
+ 1801      72617900 
+ 1802              	.LASF21:
+ 1803 00b2 4572726F 		.ascii	"ErrorCode\000"
+ 1803      72436F64 
+ 1803      6500
+ 1804              	.LASF14:
+ 1805 00bc 696E7433 		.ascii	"int32_t\000"
+ 1805      325F7400 
+ 1806              	.LASF16:
+ 1807 00c4 666C6F61 		.ascii	"float\000"
+ 1807      7400
+ 1808              	.LASF34:
+ 1809 00ca 4F757441 		.ascii	"OutArray\000"
+ 1809      72726179 
+ 1809      00
+ 1810              	.LASF1:
+ 1811 00d3 756E7369 		.ascii	"unsigned char\000"
+ 1811      676E6564 
+ 1811      20636861 
+ 1811      7200
+ 1812              	.LASF47:
+ 1813 00e1 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1813      43313120 
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 39
+
+
+ 1813      352E342E 
+ 1813      31203230 
+ 1813      31363036 
+ 1814 0114 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1814      20726576 
+ 1814      6973696F 
+ 1814      6E203233 
+ 1814      37373135 
+ 1815 0147 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1815      66756E63 
+ 1815      74696F6E 
+ 1815      2D736563 
+ 1815      74696F6E 
+ 1816              	.LASF15:
+ 1817 016f 696E7431 		.ascii	"int16\000"
+ 1817      3600
+ 1818              	.LASF8:
+ 1819 0175 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1819      20756E73 
+ 1819      69676E65 
+ 1819      6420696E 
+ 1819      7400
+ 1820              	.LASF5:
+ 1821 0187 73686F72 		.ascii	"short unsigned int\000"
+ 1821      7420756E 
+ 1821      7369676E 
+ 1821      65642069 
+ 1821      6E7400
+ 1822              	.LASF33:
+ 1823 019a 666F6F74 		.ascii	"footer\000"
+ 1823      657200
+ 1824              	.LASF35:
+ 1825 01a1 41636344 		.ascii	"AccData\000"
+ 1825      61746100 
+ 1826              	.LASF17:
+ 1827 01a9 646F7562 		.ascii	"double\000"
+ 1827      6C6500
+ 1828              	.LASF45:
+ 1829 01b0 4932435F 		.ascii	"I2C_Peripheral_ReadRegisterMulti\000"
+ 1829      50657269 
+ 1829      70686572 
+ 1829      616C5F52 
+ 1829      65616452 
+ 1830              	.LASF44:
+ 1831 01d1 4932435F 		.ascii	"I2C_Peripheral_WriteRegister\000"
+ 1831      50657269 
+ 1831      70686572 
+ 1831      616C5F57 
+ 1831      72697465 
+ 1832              	.LASF50:
+ 1833 01ee 6D61696E 		.ascii	"main\000"
+ 1833      00
+ 1834              	.LASF3:
+ 1835 01f3 5F5F696E 		.ascii	"__int16_t\000"
+ 1835      7431365F 
+ 1835      7400
+ 1836              	.LASF27:
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 40
+
+
+ 1837 01fd 6374726C 		.ascii	"ctrl_reg1\000"
+ 1837      5F726567 
+ 1837      3100
+ 1838              	.LASF28:
+ 1839 0207 6374726C 		.ascii	"ctrl_reg4\000"
+ 1839      5F726567 
+ 1839      3400
+ 1840              	.LASF11:
+ 1841 0211 756E7369 		.ascii	"unsigned int\000"
+ 1841      676E6564 
+ 1841      20696E74 
+ 1841      00
+ 1842              	.LASF10:
+ 1843 021e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1843      206C6F6E 
+ 1843      6720756E 
+ 1843      7369676E 
+ 1843      65642069 
+ 1844              	.LASF12:
+ 1845 0235 75696E74 		.ascii	"uint8_t\000"
+ 1845      385F7400 
+ 1846              	.LASF13:
+ 1847 023d 696E7431 		.ascii	"int16_t\000"
+ 1847      365F7400 
+ 1848              	.LASF51:
+ 1849 0245 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1849      52784275 
+ 1849      66666572 
+ 1849      00
+ 1850              	.LASF29:
+ 1851 0252 4F757458 		.ascii	"OutX\000"
+ 1851      00
+ 1852              	.LASF30:
+ 1853 0257 4F757459 		.ascii	"OutY\000"
+ 1853      00
+ 1854              	.LASF31:
+ 1855 025c 4F75745A 		.ascii	"OutZ\000"
+ 1855      00
+ 1856              	.LASF23:
+ 1857 0261 73697A65 		.ascii	"sizetype\000"
+ 1857      74797065 
+ 1857      00
+ 1858              	.LASF26:
+ 1859 026a 6572726F 		.ascii	"error\000"
+ 1859      7200
+ 1860              	.LASF9:
+ 1861 0270 6C6F6E67 		.ascii	"long long int\000"
+ 1861      206C6F6E 
+ 1861      6720696E 
+ 1861      7400
+ 1862              	.LASF41:
+ 1863 027e 55415254 		.ascii	"UART_Debug_Start\000"
+ 1863      5F446562 
+ 1863      75675F53 
+ 1863      74617274 
+ 1863      00
+ 1864              	.LASF48:
+ARM GAS  C:\Users\aless\AppData\Local\Temp\cclGApDe.s 			page 41
+
+
+ 1865 028f 6D61696E 		.ascii	"main.c\000"
+ 1865      2E6300
+ 1866              	.LASF18:
+ 1867 0296 63686172 		.ascii	"char\000"
+ 1867      00
+ 1868              	.LASF43:
+ 1869 029b 4932435F 		.ascii	"I2C_Peripheral_ReadRegister\000"
+ 1869      50657269 
+ 1869      70686572 
+ 1869      616C5F52 
+ 1869      65616452 
+ 1870              	.LASF4:
+ 1871 02b7 73686F72 		.ascii	"short int\000"
+ 1871      7420696E 
+ 1871      7400
+ 1872              	.LASF19:
+ 1873 02c1 4E4F5F45 		.ascii	"NO_ERROR\000"
+ 1873      52524F52 
+ 1873      00
+ 1874              	.LASF20:
+ 1875 02ca 4552524F 		.ascii	"ERROR\000"
+ 1875      5200
+ 1876              	.LASF36:
+ 1877 02d0 73746174 		.ascii	"status_register\000"
+ 1877      75735F72 
+ 1877      65676973 
+ 1877      74657200 
+ 1878              	.LASF22:
+ 1879 02e0 6C6F6E67 		.ascii	"long double\000"
+ 1879      20646F75 
+ 1879      626C6500 
+ 1880              	.LASF0:
+ 1881 02ec 7369676E 		.ascii	"signed char\000"
+ 1881      65642063 
+ 1881      68617200 
+ 1882              	.LASF25:
+ 1883 02f8 77686F5F 		.ascii	"who_am_i_reg\000"
+ 1883      616D5F69 
+ 1883      5F726567 
+ 1883      00
+ 1884              	.LASF38:
+ 1885 0305 73707269 		.ascii	"sprintf\000"
+ 1885      6E746600 
+ 1886              	.LASF42:
+ 1887 030d 43794465 		.ascii	"CyDelay\000"
+ 1887      6C617900 
+ 1888              	.LASF40:
+ 1889 0315 4932435F 		.ascii	"I2C_Peripheral_Start\000"
+ 1889      50657269 
+ 1889      70686572 
+ 1889      616C5F53 
+ 1889      74617274 
+ 1890              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
