@@ -4,6 +4,9 @@
 * In this project we set up a I2C master device with
 * to understand the I2C protocol and communicate with a
 * a I2C Slave device (LIS3DH Accelerometer).
+*
+* \author Gabriele Belotti
+* \date , 2020
 */
 
 // Include required header files
@@ -40,8 +43,8 @@
 *   \brief Address of the Control register 4
 */
 #define LIS3DH_CTRL_REG4 0x23
-/* For the normale mode at 100 Hz and ±2.0 g FSR, Hex value is set to 0x00 (default).*/
-
+// For the normale mode at 100 Hz and ±2.0 g FSR, Hex value is set to 0x00
+#define LIS3DH_NORMAL_MODE_100HZ_CTRL_REG4 0x00
 /**
 *   \brief Address of the x-axis acceleration data output LSB register
 */
@@ -165,6 +168,71 @@ int main(void)
         }
     }
     
+     /******************************************/
+    /*        Read Control Register 4        */
+    /******************************************/
+    uint8_t ctrl_reg4; 
+    error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+                                        LIS3DH_CTRL_REG4,
+                                        &ctrl_reg4);
+    
+    if (error == NO_ERROR)
+    {
+        sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
+        UART_Debug_PutString(message); 
+    }
+    else
+    {
+        UART_Debug_PutString("Error occurred during I2C comm to read control register 4\r\n");   
+    }
+    
+    /******************************************/
+    /*            I2C Writing                 */
+    /******************************************/
+    
+        
+    UART_Debug_PutString("\r\nWriting new values..\r\n");
+    
+    if (ctrl_reg1 != LIS3DH_NORMAL_MODE_100HZ_CTRL_REG1)
+    {
+        ctrl_reg1 = LIS3DH_NORMAL_MODE_100HZ_CTRL_REG1;
+    
+        error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+                                             LIS3DH_CTRL_REG1,
+                                             ctrl_reg1);
+    
+        if (error == NO_ERROR)
+        {
+            sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
+            UART_Debug_PutString(message); 
+        }
+        else
+        {
+            UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");   
+        }
+    }
+    
+    UART_Debug_PutString("\r\nWriting new values..\r\n");
+    
+    if (ctrl_reg4 != LIS3DH_NORMAL_MODE_100HZ_CTRL_REG4)
+    {
+        ctrl_reg4 = LIS3DH_NORMAL_MODE_100HZ_CTRL_REG4;
+    
+        error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+                                             LIS3DH_CTRL_REG4,
+                                             ctrl_reg4);
+    
+        if (error == NO_ERROR)
+        {
+            sprintf(message, "CONTROL REGISTER 4 successfully written as: 0x%02X\r\n", ctrl_reg4);
+            UART_Debug_PutString(message); 
+        }
+        else
+        {
+            UART_Debug_PutString("Error occurred during I2C comm to set control register 4\r\n");   
+        }
+    }
+    
     /******************************************/
     /*     Read Control Register 1 again      */
     /******************************************/
@@ -183,6 +251,26 @@ int main(void)
         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
     }
     
+     /******************************************/
+    /*     Read Control Register 4 again      */
+    /******************************************/
+
+    error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+                                        LIS3DH_CTRL_REG4,
+                                        &ctrl_reg4);
+    
+    if (error == NO_ERROR)
+    {
+        sprintf(message, "CONTROL REGISTER 4 after overwrite operation: 0x%02X\r\n", ctrl_reg4);
+        UART_Debug_PutString(message); 
+    }
+    else
+    {
+        UART_Debug_PutString("Error occurred during I2C comm to read control register 4\r\n");   
+    }
+    
+   
+    
     int16_t OutX, OutY, OutZ;
     uint8_t header = 0xA0;
     uint8_t footer = 0xC0;
@@ -194,9 +282,9 @@ int main(void)
     
     for(;;)
     {
-        CyDelay(10); 
         
-        error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+        CyDelay(10); 
+         error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
                                                  LIS3DH_OUT_X_L,
                                                  2,
                                                  &DataX[0]);
@@ -214,19 +302,19 @@ int main(void)
          if(error == NO_ERROR)
         {
             OutX = (int16)((DataX[0] | (DataX[1]<<8)))>>6;
-            OutX = (OutX*4); /*Operation needed because the sensitity is of 4 mg/digit*/
+            OutX = (OutX*4); //Operation needed because the sensitity is of 4 mg/digit
             OutArray[1] = (uint8_t)(OutX & 0xFF);
             OutArray[2] = (uint8_t)(OutX >> 8);
             
             
             OutY = (int16)((DataY[0] | (DataY[1]<<8)))>>6;
-            OutY = (OutY*4); /*Operation needed because the sensitity is of 4 mg/digit*/
+            OutY = (OutY*4); //Operation needed because the sensitity is of 4 mg/digit
             OutArray[3] = (uint8_t)(OutY & 0xFF);
             OutArray[4] = (uint8_t)(OutY >> 8);
             
             
             OutZ = (int16)((DataZ[0] | (DataZ[1]<<8)))>>6;
-            OutZ = (OutZ*4); /*Operation needed because the sensitity is of 4 mg/digit*/
+            OutZ = (OutZ*4); //Operation needed because the sensitity is of 4 mg/digit
             
             OutArray[5] = (uint8_t)(OutZ & 0xFF);
             OutArray[6] = (uint8_t)(OutZ >> 8);
