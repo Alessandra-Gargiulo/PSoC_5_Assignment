@@ -1,0 +1,546 @@
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"InterruptRoutines.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.Custom_ISR,"ax",%progbits
+  20              		.align	2
+  21              		.global	Custom_ISR
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	Custom_ISR, %function
+  25              	Custom_ISR:
+  26              	.LFB63:
+  27              		.file 1 "InterruptRoutines.c"
+   1:InterruptRoutines.c **** /* ========================================
+   2:InterruptRoutines.c ****  *
+   3:InterruptRoutines.c ****  * Copyright YOUR COMPANY, THE YEAR
+   4:InterruptRoutines.c ****  * All Rights Reserved
+   5:InterruptRoutines.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:InterruptRoutines.c ****  *
+   7:InterruptRoutines.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:InterruptRoutines.c ****  * WHICH IS THE PROPERTY OF your company.
+   9:InterruptRoutines.c ****  *
+  10:InterruptRoutines.c ****  * ========================================
+  11:InterruptRoutines.c **** */
+  12:InterruptRoutines.c **** #include "InterruptRoutines.h"
+  13:InterruptRoutines.c **** 
+  14:InterruptRoutines.c **** uint8 FlagIsr = 0;   //Inizialization of FlagIsr
+  15:InterruptRoutines.c **** 
+  16:InterruptRoutines.c **** CY_ISR(Custom_ISR)
+  17:InterruptRoutines.c **** {
+  28              		.loc 1 17 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  18:InterruptRoutines.c ****     Timer_1_ReadStatusRegister();
+  36              		.loc 1 18 0
+  37 0002 FFF7FEFF 		bl	Timer_1_ReadStatusRegister
+  38              	.LVL0:
+  19:InterruptRoutines.c ****     FlagIsr = 1; //Set the Flag to 1 every 10 ms
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 2
+
+
+  39              		.loc 1 19 0
+  40 0006 0122     		movs	r2, #1
+  41 0008 014B     		ldr	r3, .L3
+  42 000a 1A70     		strb	r2, [r3]
+  43 000c 08BD     		pop	{r3, pc}
+  44              	.L4:
+  45 000e 00BF     		.align	2
+  46              	.L3:
+  47 0010 00000000 		.word	.LANCHOR0
+  48              		.cfi_endproc
+  49              	.LFE63:
+  50              		.size	Custom_ISR, .-Custom_ISR
+  51              		.global	FlagIsr
+  52              		.bss
+  53              		.set	.LANCHOR0,. + 0
+  54              		.type	FlagIsr, %object
+  55              		.size	FlagIsr, 1
+  56              	FlagIsr:
+  57 0000 00       		.space	1
+  58              		.text
+  59              	.Letext0:
+  60              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+  61              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+  62              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+  63              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+  64              		.file 6 "Generated_Source\\PSoC5/Timer_1.h"
+  65              		.section	.debug_info,"",%progbits
+  66              	.Ldebug_info0:
+  67 0000 F9000000 		.4byte	0xf9
+  68 0004 0400     		.2byte	0x4
+  69 0006 00000000 		.4byte	.Ldebug_abbrev0
+  70 000a 04       		.byte	0x4
+  71 000b 01       		.uleb128 0x1
+  72 000c 36000000 		.4byte	.LASF19
+  73 0010 0C       		.byte	0xc
+  74 0011 FE000000 		.4byte	.LASF20
+  75 0015 12010000 		.4byte	.LASF21
+  76 0019 00000000 		.4byte	.Ldebug_ranges0+0
+  77 001d 00000000 		.4byte	0
+  78 0021 00000000 		.4byte	.Ldebug_line0
+  79 0025 02       		.uleb128 0x2
+  80 0026 01       		.byte	0x1
+  81 0027 06       		.byte	0x6
+  82 0028 99010000 		.4byte	.LASF0
+  83 002c 02       		.uleb128 0x2
+  84 002d 01       		.byte	0x1
+  85 002e 08       		.byte	0x8
+  86 002f 4E010000 		.4byte	.LASF1
+  87 0033 02       		.uleb128 0x2
+  88 0034 02       		.byte	0x2
+  89 0035 05       		.byte	0x5
+  90 0036 C1010000 		.4byte	.LASF2
+  91 003a 02       		.uleb128 0x2
+  92 003b 02       		.byte	0x2
+  93 003c 07       		.byte	0x7
+  94 003d 71010000 		.4byte	.LASF3
+  95 0041 03       		.uleb128 0x3
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 3
+
+
+  96 0042 B1010000 		.4byte	.LASF9
+  97 0046 02       		.byte	0x2
+  98 0047 3F       		.byte	0x3f
+  99 0048 4C000000 		.4byte	0x4c
+ 100 004c 02       		.uleb128 0x2
+ 101 004d 04       		.byte	0x4
+ 102 004e 05       		.byte	0x5
+ 103 004f 61010000 		.4byte	.LASF4
+ 104 0053 02       		.uleb128 0x2
+ 105 0054 04       		.byte	0x4
+ 106 0055 07       		.byte	0x7
+ 107 0056 CA000000 		.4byte	.LASF5
+ 108 005a 02       		.uleb128 0x2
+ 109 005b 08       		.byte	0x8
+ 110 005c 05       		.byte	0x5
+ 111 005d 00000000 		.4byte	.LASF6
+ 112 0061 02       		.uleb128 0x2
+ 113 0062 08       		.byte	0x8
+ 114 0063 07       		.byte	0x7
+ 115 0064 DC000000 		.4byte	.LASF7
+ 116 0068 04       		.uleb128 0x4
+ 117 0069 04       		.byte	0x4
+ 118 006a 05       		.byte	0x5
+ 119 006b 696E7400 		.ascii	"int\000"
+ 120 006f 02       		.uleb128 0x2
+ 121 0070 04       		.byte	0x4
+ 122 0071 07       		.byte	0x7
+ 123 0072 29000000 		.4byte	.LASF8
+ 124 0076 03       		.uleb128 0x3
+ 125 0077 CB010000 		.4byte	.LASF10
+ 126 007b 03       		.byte	0x3
+ 127 007c 2C       		.byte	0x2c
+ 128 007d 41000000 		.4byte	0x41
+ 129 0081 05       		.uleb128 0x5
+ 130 0082 C4000000 		.4byte	.LASF11
+ 131 0086 04       		.byte	0x4
+ 132 0087 E401     		.2byte	0x1e4
+ 133 0089 2C000000 		.4byte	0x2c
+ 134 008d 02       		.uleb128 0x2
+ 135 008e 04       		.byte	0x4
+ 136 008f 04       		.byte	0x4
+ 137 0090 BB010000 		.4byte	.LASF12
+ 138 0094 02       		.uleb128 0x2
+ 139 0095 08       		.byte	0x8
+ 140 0096 04       		.byte	0x4
+ 141 0097 6A010000 		.4byte	.LASF13
+ 142 009b 02       		.uleb128 0x2
+ 143 009c 01       		.byte	0x1
+ 144 009d 08       		.byte	0x8
+ 145 009e 5C010000 		.4byte	.LASF14
+ 146 00a2 02       		.uleb128 0x2
+ 147 00a3 08       		.byte	0x8
+ 148 00a4 04       		.byte	0x4
+ 149 00a5 A5010000 		.4byte	.LASF15
+ 150 00a9 02       		.uleb128 0x2
+ 151 00aa 04       		.byte	0x4
+ 152 00ab 07       		.byte	0x7
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 4
+
+
+ 153 00ac D3010000 		.4byte	.LASF16
+ 154 00b0 06       		.uleb128 0x6
+ 155 00b1 F3000000 		.4byte	.LASF22
+ 156 00b5 01       		.byte	0x1
+ 157 00b6 10       		.byte	0x10
+ 158 00b7 00000000 		.4byte	.LFB63
+ 159 00bb 14000000 		.4byte	.LFE63-.LFB63
+ 160 00bf 01       		.uleb128 0x1
+ 161 00c0 9C       		.byte	0x9c
+ 162 00c1 CF000000 		.4byte	0xcf
+ 163 00c5 07       		.uleb128 0x7
+ 164 00c6 06000000 		.4byte	.LVL0
+ 165 00ca F1000000 		.4byte	0xf1
+ 166 00ce 00       		.byte	0
+ 167 00cf 08       		.uleb128 0x8
+ 168 00d0 8C010000 		.4byte	.LASF17
+ 169 00d4 05       		.byte	0x5
+ 170 00d5 1207     		.2byte	0x712
+ 171 00d7 DB000000 		.4byte	0xdb
+ 172 00db 09       		.uleb128 0x9
+ 173 00dc 76000000 		.4byte	0x76
+ 174 00e0 0A       		.uleb128 0xa
+ 175 00e1 84010000 		.4byte	.LASF18
+ 176 00e5 01       		.byte	0x1
+ 177 00e6 0E       		.byte	0xe
+ 178 00e7 81000000 		.4byte	0x81
+ 179 00eb 05       		.uleb128 0x5
+ 180 00ec 03       		.byte	0x3
+ 181 00ed 00000000 		.4byte	FlagIsr
+ 182 00f1 0B       		.uleb128 0xb
+ 183 00f2 0E000000 		.4byte	.LASF23
+ 184 00f6 0E000000 		.4byte	.LASF23
+ 185 00fa 06       		.byte	0x6
+ 186 00fb 5E       		.byte	0x5e
+ 187 00fc 00       		.byte	0
+ 188              		.section	.debug_abbrev,"",%progbits
+ 189              	.Ldebug_abbrev0:
+ 190 0000 01       		.uleb128 0x1
+ 191 0001 11       		.uleb128 0x11
+ 192 0002 01       		.byte	0x1
+ 193 0003 25       		.uleb128 0x25
+ 194 0004 0E       		.uleb128 0xe
+ 195 0005 13       		.uleb128 0x13
+ 196 0006 0B       		.uleb128 0xb
+ 197 0007 03       		.uleb128 0x3
+ 198 0008 0E       		.uleb128 0xe
+ 199 0009 1B       		.uleb128 0x1b
+ 200 000a 0E       		.uleb128 0xe
+ 201 000b 55       		.uleb128 0x55
+ 202 000c 17       		.uleb128 0x17
+ 203 000d 11       		.uleb128 0x11
+ 204 000e 01       		.uleb128 0x1
+ 205 000f 10       		.uleb128 0x10
+ 206 0010 17       		.uleb128 0x17
+ 207 0011 00       		.byte	0
+ 208 0012 00       		.byte	0
+ 209 0013 02       		.uleb128 0x2
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 5
+
+
+ 210 0014 24       		.uleb128 0x24
+ 211 0015 00       		.byte	0
+ 212 0016 0B       		.uleb128 0xb
+ 213 0017 0B       		.uleb128 0xb
+ 214 0018 3E       		.uleb128 0x3e
+ 215 0019 0B       		.uleb128 0xb
+ 216 001a 03       		.uleb128 0x3
+ 217 001b 0E       		.uleb128 0xe
+ 218 001c 00       		.byte	0
+ 219 001d 00       		.byte	0
+ 220 001e 03       		.uleb128 0x3
+ 221 001f 16       		.uleb128 0x16
+ 222 0020 00       		.byte	0
+ 223 0021 03       		.uleb128 0x3
+ 224 0022 0E       		.uleb128 0xe
+ 225 0023 3A       		.uleb128 0x3a
+ 226 0024 0B       		.uleb128 0xb
+ 227 0025 3B       		.uleb128 0x3b
+ 228 0026 0B       		.uleb128 0xb
+ 229 0027 49       		.uleb128 0x49
+ 230 0028 13       		.uleb128 0x13
+ 231 0029 00       		.byte	0
+ 232 002a 00       		.byte	0
+ 233 002b 04       		.uleb128 0x4
+ 234 002c 24       		.uleb128 0x24
+ 235 002d 00       		.byte	0
+ 236 002e 0B       		.uleb128 0xb
+ 237 002f 0B       		.uleb128 0xb
+ 238 0030 3E       		.uleb128 0x3e
+ 239 0031 0B       		.uleb128 0xb
+ 240 0032 03       		.uleb128 0x3
+ 241 0033 08       		.uleb128 0x8
+ 242 0034 00       		.byte	0
+ 243 0035 00       		.byte	0
+ 244 0036 05       		.uleb128 0x5
+ 245 0037 16       		.uleb128 0x16
+ 246 0038 00       		.byte	0
+ 247 0039 03       		.uleb128 0x3
+ 248 003a 0E       		.uleb128 0xe
+ 249 003b 3A       		.uleb128 0x3a
+ 250 003c 0B       		.uleb128 0xb
+ 251 003d 3B       		.uleb128 0x3b
+ 252 003e 05       		.uleb128 0x5
+ 253 003f 49       		.uleb128 0x49
+ 254 0040 13       		.uleb128 0x13
+ 255 0041 00       		.byte	0
+ 256 0042 00       		.byte	0
+ 257 0043 06       		.uleb128 0x6
+ 258 0044 2E       		.uleb128 0x2e
+ 259 0045 01       		.byte	0x1
+ 260 0046 3F       		.uleb128 0x3f
+ 261 0047 19       		.uleb128 0x19
+ 262 0048 03       		.uleb128 0x3
+ 263 0049 0E       		.uleb128 0xe
+ 264 004a 3A       		.uleb128 0x3a
+ 265 004b 0B       		.uleb128 0xb
+ 266 004c 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 6
+
+
+ 267 004d 0B       		.uleb128 0xb
+ 268 004e 27       		.uleb128 0x27
+ 269 004f 19       		.uleb128 0x19
+ 270 0050 11       		.uleb128 0x11
+ 271 0051 01       		.uleb128 0x1
+ 272 0052 12       		.uleb128 0x12
+ 273 0053 06       		.uleb128 0x6
+ 274 0054 40       		.uleb128 0x40
+ 275 0055 18       		.uleb128 0x18
+ 276 0056 9742     		.uleb128 0x2117
+ 277 0058 19       		.uleb128 0x19
+ 278 0059 01       		.uleb128 0x1
+ 279 005a 13       		.uleb128 0x13
+ 280 005b 00       		.byte	0
+ 281 005c 00       		.byte	0
+ 282 005d 07       		.uleb128 0x7
+ 283 005e 898201   		.uleb128 0x4109
+ 284 0061 00       		.byte	0
+ 285 0062 11       		.uleb128 0x11
+ 286 0063 01       		.uleb128 0x1
+ 287 0064 31       		.uleb128 0x31
+ 288 0065 13       		.uleb128 0x13
+ 289 0066 00       		.byte	0
+ 290 0067 00       		.byte	0
+ 291 0068 08       		.uleb128 0x8
+ 292 0069 34       		.uleb128 0x34
+ 293 006a 00       		.byte	0
+ 294 006b 03       		.uleb128 0x3
+ 295 006c 0E       		.uleb128 0xe
+ 296 006d 3A       		.uleb128 0x3a
+ 297 006e 0B       		.uleb128 0xb
+ 298 006f 3B       		.uleb128 0x3b
+ 299 0070 05       		.uleb128 0x5
+ 300 0071 49       		.uleb128 0x49
+ 301 0072 13       		.uleb128 0x13
+ 302 0073 3F       		.uleb128 0x3f
+ 303 0074 19       		.uleb128 0x19
+ 304 0075 3C       		.uleb128 0x3c
+ 305 0076 19       		.uleb128 0x19
+ 306 0077 00       		.byte	0
+ 307 0078 00       		.byte	0
+ 308 0079 09       		.uleb128 0x9
+ 309 007a 35       		.uleb128 0x35
+ 310 007b 00       		.byte	0
+ 311 007c 49       		.uleb128 0x49
+ 312 007d 13       		.uleb128 0x13
+ 313 007e 00       		.byte	0
+ 314 007f 00       		.byte	0
+ 315 0080 0A       		.uleb128 0xa
+ 316 0081 34       		.uleb128 0x34
+ 317 0082 00       		.byte	0
+ 318 0083 03       		.uleb128 0x3
+ 319 0084 0E       		.uleb128 0xe
+ 320 0085 3A       		.uleb128 0x3a
+ 321 0086 0B       		.uleb128 0xb
+ 322 0087 3B       		.uleb128 0x3b
+ 323 0088 0B       		.uleb128 0xb
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 7
+
+
+ 324 0089 49       		.uleb128 0x49
+ 325 008a 13       		.uleb128 0x13
+ 326 008b 3F       		.uleb128 0x3f
+ 327 008c 19       		.uleb128 0x19
+ 328 008d 02       		.uleb128 0x2
+ 329 008e 18       		.uleb128 0x18
+ 330 008f 00       		.byte	0
+ 331 0090 00       		.byte	0
+ 332 0091 0B       		.uleb128 0xb
+ 333 0092 2E       		.uleb128 0x2e
+ 334 0093 00       		.byte	0
+ 335 0094 3F       		.uleb128 0x3f
+ 336 0095 19       		.uleb128 0x19
+ 337 0096 3C       		.uleb128 0x3c
+ 338 0097 19       		.uleb128 0x19
+ 339 0098 6E       		.uleb128 0x6e
+ 340 0099 0E       		.uleb128 0xe
+ 341 009a 03       		.uleb128 0x3
+ 342 009b 0E       		.uleb128 0xe
+ 343 009c 3A       		.uleb128 0x3a
+ 344 009d 0B       		.uleb128 0xb
+ 345 009e 3B       		.uleb128 0x3b
+ 346 009f 0B       		.uleb128 0xb
+ 347 00a0 00       		.byte	0
+ 348 00a1 00       		.byte	0
+ 349 00a2 00       		.byte	0
+ 350              		.section	.debug_aranges,"",%progbits
+ 351 0000 1C000000 		.4byte	0x1c
+ 352 0004 0200     		.2byte	0x2
+ 353 0006 00000000 		.4byte	.Ldebug_info0
+ 354 000a 04       		.byte	0x4
+ 355 000b 00       		.byte	0
+ 356 000c 0000     		.2byte	0
+ 357 000e 0000     		.2byte	0
+ 358 0010 00000000 		.4byte	.LFB63
+ 359 0014 14000000 		.4byte	.LFE63-.LFB63
+ 360 0018 00000000 		.4byte	0
+ 361 001c 00000000 		.4byte	0
+ 362              		.section	.debug_ranges,"",%progbits
+ 363              	.Ldebug_ranges0:
+ 364 0000 00000000 		.4byte	.LFB63
+ 365 0004 14000000 		.4byte	.LFE63
+ 366 0008 00000000 		.4byte	0
+ 367 000c 00000000 		.4byte	0
+ 368              		.section	.debug_line,"",%progbits
+ 369              	.Ldebug_line0:
+ 370 0000 7D010000 		.section	.debug_str,"MS",%progbits,1
+ 370      02006601 
+ 370      00000201 
+ 370      FB0E0D00 
+ 370      01010101 
+ 371              	.LASF6:
+ 372 0000 6C6F6E67 		.ascii	"long long int\000"
+ 372      206C6F6E 
+ 372      6720696E 
+ 372      7400
+ 373              	.LASF23:
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 8
+
+
+ 374 000e 54696D65 		.ascii	"Timer_1_ReadStatusRegister\000"
+ 374      725F315F 
+ 374      52656164 
+ 374      53746174 
+ 374      75735265 
+ 375              	.LASF8:
+ 376 0029 756E7369 		.ascii	"unsigned int\000"
+ 376      676E6564 
+ 376      20696E74 
+ 376      00
+ 377              	.LASF19:
+ 378 0036 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 378      43313120 
+ 378      352E342E 
+ 378      31203230 
+ 378      31363036 
+ 379 0069 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 379      20726576 
+ 379      6973696F 
+ 379      6E203233 
+ 379      37373135 
+ 380 009c 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 380      66756E63 
+ 380      74696F6E 
+ 380      2D736563 
+ 380      74696F6E 
+ 381              	.LASF11:
+ 382 00c4 75696E74 		.ascii	"uint8\000"
+ 382      3800
+ 383              	.LASF5:
+ 384 00ca 6C6F6E67 		.ascii	"long unsigned int\000"
+ 384      20756E73 
+ 384      69676E65 
+ 384      6420696E 
+ 384      7400
+ 385              	.LASF7:
+ 386 00dc 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 386      206C6F6E 
+ 386      6720756E 
+ 386      7369676E 
+ 386      65642069 
+ 387              	.LASF22:
+ 388 00f3 43757374 		.ascii	"Custom_ISR\000"
+ 388      6F6D5F49 
+ 388      535200
+ 389              	.LASF20:
+ 390 00fe 496E7465 		.ascii	"InterruptRoutines.c\000"
+ 390      72727570 
+ 390      74526F75 
+ 390      74696E65 
+ 390      732E6300 
+ 391              	.LASF21:
+ 392 0112 433A5C55 		.ascii	"C:\\Users\\aless\\Desktop\\PSoC_03\\AY1920_II_HW_05"
+ 392      73657273 
+ 392      5C616C65 
+ 392      73735C44 
+ 392      65736B74 
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 9
+
+
+ 393 0140 5F50524F 		.ascii	"_PROJ_2.cydsn\000"
+ 393      4A5F322E 
+ 393      63796473 
+ 393      6E00
+ 394              	.LASF1:
+ 395 014e 756E7369 		.ascii	"unsigned char\000"
+ 395      676E6564 
+ 395      20636861 
+ 395      7200
+ 396              	.LASF14:
+ 397 015c 63686172 		.ascii	"char\000"
+ 397      00
+ 398              	.LASF4:
+ 399 0161 6C6F6E67 		.ascii	"long int\000"
+ 399      20696E74 
+ 399      00
+ 400              	.LASF13:
+ 401 016a 646F7562 		.ascii	"double\000"
+ 401      6C6500
+ 402              	.LASF3:
+ 403 0171 73686F72 		.ascii	"short unsigned int\000"
+ 403      7420756E 
+ 403      7369676E 
+ 403      65642069 
+ 403      6E7400
+ 404              	.LASF18:
+ 405 0184 466C6167 		.ascii	"FlagIsr\000"
+ 405      49737200 
+ 406              	.LASF17:
+ 407 018c 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 407      52784275 
+ 407      66666572 
+ 407      00
+ 408              	.LASF0:
+ 409 0199 7369676E 		.ascii	"signed char\000"
+ 409      65642063 
+ 409      68617200 
+ 410              	.LASF15:
+ 411 01a5 6C6F6E67 		.ascii	"long double\000"
+ 411      20646F75 
+ 411      626C6500 
+ 412              	.LASF9:
+ 413 01b1 5F5F696E 		.ascii	"__int32_t\000"
+ 413      7433325F 
+ 413      7400
+ 414              	.LASF12:
+ 415 01bb 666C6F61 		.ascii	"float\000"
+ 415      7400
+ 416              	.LASF2:
+ 417 01c1 73686F72 		.ascii	"short int\000"
+ 417      7420696E 
+ 417      7400
+ 418              	.LASF10:
+ 419 01cb 696E7433 		.ascii	"int32_t\000"
+ 419      325F7400 
+ 420              	.LASF16:
+ 421 01d3 73697A65 		.ascii	"sizetype\000"
+ARM GAS  C:\Users\aless\AppData\Local\Temp\ccXrs1ah.s 			page 10
+
+
+ 421      74797065 
+ 421      00
+ 422              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

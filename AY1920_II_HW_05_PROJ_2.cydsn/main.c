@@ -12,6 +12,7 @@
 #include "I2C_Interface.h"
 #include "project.h"
 #include "stdio.h"
+#include "InterruptRoutines.h"
 
 /**
 *   \brief 7-bit I2C address of the slave device.
@@ -42,22 +43,24 @@
 *   \brief Address of the Control register 4
 */
 #define LIS3DH_CTRL_REG4 0x23
-// For the normale mode at 100 Hz and ±2.0 g FSR, Hex value is set to 0x00
-#define LIS3DH_NORMAL_MODE_100HZ_CTRL_REG4 0x00
+
+// For the normale mode at 100 Hz and ±2.0 g FSR, Hex value is set to 0x80 because BDU is set to 1
+
+#define LIS3DH_NORMAL_MODE_100HZ_CTRL_REG4 0x80
 /**
 *   \brief Address of the x-axis acceleration data output LSB register
 */
-#define LIS3DH_OUT_X_L 0x028
+#define LIS3DH_OUT_X_L 0x28
 
 /**
 *   \brief Address of the y-axis acceleration data output LSB register
 */
-#define LIS3DH_OUT_Y_L 0x02A
+#define LIS3DH_OUT_Y_L 0x2A
 
 /**
 *   \brief Address of the z-axis acceleration data output LSB register
 */
-#define LIS3DH_OUT_Z_L 0x02C
+#define LIS3DH_OUT_Z_L 0x2C
 
 /*Thanks to the multiread function, we don't need to specify the MSB register address */
 
@@ -171,7 +174,7 @@ int main(void)
     
     /******************************************/
     /*            I2C Writing 
-               COntrol Register 4             */
+               Control Register 4             */
     /******************************************/
     
     UART_Debug_PutString("\r\nWriting new values..\r\n");
@@ -196,65 +199,70 @@ int main(void)
     }
     
     
-    int16_t OutX, OutY, OutZ;
+    int16_t ValueX, ValueY, ValueZ;
     uint8_t header = 0xA0;
     uint8_t footer = 0xC0;
-    uint8_t OutArray[8]; 
+    uint8_t ValueArray[8]; 
     uint8_t AccData[6];
     uint8_t status_register;
     
-    OutArray[0] = header;
-    OutArray[7] = footer;
+    ValueArray[0] = header;
+    ValueArray[7] = footer;
+    
+    Timer_1_Start();
+    isr_10_StartEx(Custom_ISR);
     
     for(;;)
     {
+        if(FlagIsr != 0)
+        {
+            //Reading of the status register
+             error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+                                                 LIS3DH_STATUS_REG,
+                                                 &status_register);
         
-         //CyDelay(10);  
-        //Reading of the status register
-         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-                                             LIS3DH_STATUS_REG,
-                                             &status_register);
-        
-        if(error==NO_ERROR) 
-        { 
-           //Checking if ZYXDA is set to 1. If in this condition that means that a new set of data is avaiable.
-         if((status_register & 1<<3) == 8)
-         { 
-            //Checking if ZYXOR is set to 1. In that case a new set of data is overwritten to the previous set. 
-            if ((status_register & 1<<7) == 128)
-            {
-             //It is used a multiread function because the registers are consecutive.
-              error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                                       LIS3DH_OUT_X_L,
-                                                       6,
-                                                       &AccData[0]);
-        
-            if (error==NO_ERROR)
-              {    
-                OutX = (int16)((AccData[0] | (AccData[1]<<8)))>>6;
-                OutX = (OutX*4); //Operation needed because the sensitity is of 4 mg/digit
-                OutArray[1] = (uint8_t)(OutX & 0xFF);
-                OutArray[2] = (uint8_t)(OutX >> 8);
-            
-            
-                OutY = (int16)((AccData[2] | (AccData[3]<<8)))>>6;
-                OutY = (OutY*4); //Operation needed because the sensitity is of 4 mg/digit
-                OutArray[3] = (uint8_t)(OutY & 0xFF);
-                OutArray[4] = (uint8_t)(OutY >> 8);
-            
-            
-                OutZ = (int16)((AccData[4] | (AccData[5]<<8)))>>6;
-                OutZ = (OutZ*4); //Operation needed because the sensitity is of 4 mg/digit
-            
-                OutArray[5] = (uint8_t)(OutZ & 0xFF);
-                OutArray[6] = (uint8_t)(OutZ >> 8);
+             if(error==NO_ERROR) 
+            { 
+                //Checking if ZYXDA is set to 1. This condition that means that a new set of data is avaiable.
+               if((status_register & 1<<3) == 8)
+                { 
                 
-                UART_Debug_PutArray(OutArray, 8);
-              }
-           }
+                 //It is used a multiread function because the registers X, Y and Z are consecutives.
+            
+                 error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+                                                          LIS3DH_OUT_X_L,
+                                                          6,
+                                                          &AccData[0]);
+        
+                 if (error==NO_ERROR)
+                {    
+                   ValueX = (int16)((AccData[0] | (AccData[1]<<8)))>>6;
+                   ValueX = (ValueX*4); //Operation needed because the sensitity is of 4 mg/digit
+                   ValueArray[1] = (uint8_t)(ValueX & 0xFF);
+                   ValueArray[2] = (uint8_t)(ValueX >> 8);
+            
+            
+                   ValueY = (int16)((AccData[2] | (AccData[3]<<8)))>>6;
+                   ValueY = (ValueY*4); //Operation needed because the sensitity is of 4 mg/digit
+                   ValueArray[3] = (uint8_t)(ValueY & 0xFF);
+                   ValueArray[4] = (uint8_t)(ValueY >> 8);
+            
+            
+                   ValueZ = (int16)((AccData[4] | (AccData[5]<<8)))>>6;
+                   ValueZ = (ValueZ*4); //Operation needed because the sensitity is of 4 mg/digit
+                   ValueArray[5] = (uint8_t)(ValueZ & 0xFF);
+                   ValueArray[6] = (uint8_t)(ValueZ >> 8);
+                
+                   UART_Debug_PutArray(ValueArray, 8); //Sending the values to UART
+                
+                   FlagIsr =0; //Set FlagIsr to 0 again
+                }
+                }
+              
+            }
         }
-      }
-   }
+    }
 }
+    
 
 /* [] END OF FILE */
