@@ -38,9 +38,11 @@
         <Files Root="C:\Users\aless\Desktop\PSoC_03\AY1920_II_HW_05_PROJ_3.cydsn">
           <File BuildType="BUILD" Toolchain="">main.c</File>
           <File BuildType="BUILD" Toolchain="">I2C_Interface.c</File>
+          <File BuildType="BUILD" Toolchain="">InterruptRoutines.c</File>
           <File BuildType="BUILD" Toolchain="">cyapicallbacks.h</File>
           <File BuildType="BUILD" Toolchain="">I2C_Interface.h</File>
           <File BuildType="BUILD" Toolchain="">ErrorCodes.h</File>
+          <File BuildType="BUILD" Toolchain="">InterruptRoutines.h</File>
         </Files>
       </Folder>
       <Folder BuildType="STRICT" Path="C:\Users\aless\Desktop\PSoC_03\AY1920_II_HW_05_PROJ_3.cydsn\Generated_Source\PSoC5">

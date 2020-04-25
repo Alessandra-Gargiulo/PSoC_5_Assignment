@@ -4,7 +4,6 @@
 * In this project we set up a I2C master device with
 * to understand the I2C protocol and communicate with a
 * a I2C Slave device (LIS3DH Accelerometer).
-*
 * \date , 2020
 */
 
@@ -12,6 +11,7 @@
 #include "I2C_Interface.h"
 #include "project.h"
 #include "stdio.h"
+#include "InterruptRoutines.h"
 
 /**
 *   \brief 7-bit I2C address of the slave device.
@@ -45,8 +45,8 @@
 
 /*brief Hex value to set high resolution mode at 100 Hz to the accelerator and ±4.0 g FSR.*/
 
-#define LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4 0x18
-
+#define LIS3DH_HIGH_RESOLUTION_MODE_100HZ_CTRL_REG4 0x98
+//The BDU bit is set to 1
 
 /**
 *   \brief Address of the x-axis acceleration data output LSB register
@@ -200,67 +200,91 @@ int main(void)
         }
     }
     
-    int16_t OutX, OutY, OutZ;
+ 
     uint8_t header = 0xA0;
     uint8_t footer = 0xC0;
-    uint8_t OutArray[8]; 
+    uint8_t ValueArray[14]; 
     uint8_t AccData[6];
     uint8_t status_register;
+    int16_t ValueX, ValueY, ValueZ;
+    int32 ValueX1, ValueY1, ValueZ1;
+    float32 AccX, AccY, AccZ;
     
-    OutArray[0] = header;
-    OutArray[7] = footer;
+    ValueArray[0] = header;
+    ValueArray[13] = footer;
     
+    Timer_1_Start();
+    isr_10_StartEx(Custom_ISR);
    
     for(;;)
     {
-         //CyDelay(10);  
-        //Reading of the status register
-         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-                                             LIS3DH_STATUS_REG,
-                                             &status_register);
+       if(FlagIsr != 0)
+        {
+          //Reading of the status register
+          error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+                                                LIS3DH_STATUS_REG,
+                                                &status_register);
         
-        if(error==NO_ERROR) 
-        { 
-           //Checking if ZYXDA is set to 1. If in this condition that means that a new set of data is avaiable.
-         if((status_register & 1<<3) == 8)
-         { 
-            //Checking if ZYXOR is set to 1. In that case a new set of data is overwritten to the previous set. 
-            if ((status_register & 1<<7) == 128)
-            {
+          if(error==NO_ERROR) 
+          { 
+           //Checking if ZYXDA is set to 1. This condition means that a new set of data is avaiable.
+              if((status_register & 1<<3) == 8)
+              { 
              //It is used a multiread function because the registers are consecutive.
-              error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
-                                                       LIS3DH_OUT_X_L,
-                                                       6,
-                                                       &AccData[0]);
+                error = I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+                                                         LIS3DH_OUT_X_L,
+                                                         6,
+                                                         &AccData[0]);
         
-            if (error==NO_ERROR)
-              {    
-                OutX = (int16)((AccData[0] | (AccData[1]<<8)))>>4;
-                OutX = (OutX*2); //Operation needed because the sensitity is of 2 mg/digit
-                OutArray[1] = (uint8_t)(OutX & 0xFF);
-                OutArray[2] = (uint8_t)(OutX >> 8);
+                 if (error==NO_ERROR)
+                 {    
+                    ValueX = (int16)((AccData[0] | (AccData[1]<<8)))>>4;
+                //We need to multiply ValueX by 2 because the sensitivity in this case is of 2mg/digit. Then, in order to
+                //convert the X axial output of the Accelerometer to a floating point in m/s2 units, we need to multiply
+                // by 9.806* 0.001, that is the equivalent value of an mg in m/s2.
+                    AccX = (ValueX*2*9.806*0.001); // The final result is set in a float variable.
+                //Cast the floating point values to an int variable without losing information through the
+                    ValueX1= AccX * 1000; //multiplication by 1000.
+                    ValueArray[1] = (uint8_t)(ValueX1 & 0xFF);
+                    ValueArray[2] = (uint8_t)(ValueX1 >> 8);
+                    ValueArray[3] = (uint8_t)(ValueX1 >> 16);
+                    ValueArray[4] = (uint8_t)(ValueX1 >> 24);
             
             
-                OutY = (int16)((AccData[2] | (AccData[3]<<8)))>>4;
-                OutY = (OutY*2); //Operation needed because the sensitity is of 2 mg/digit
-                OutArray[3] = (uint8_t)(OutY & 0xFF);
-                OutArray[4] = (uint8_t)(OutY >> 8);
-            
-            
-                OutZ = (int16)((AccData[4] | (AccData[5]<<8)))>>4;
-                OutZ = (OutZ*2); //Operation needed because the sensitity is of 2 mg/digit
-            
-                OutArray[5] = (uint8_t)(OutZ & 0xFF);
-                OutArray[6] = (uint8_t)(OutZ >> 8);
+                    ValueY = (int16)((AccData[2] | (AccData[3]<<8)))>>4;
+               //We need to multiply ValueY by 2 because the sensitivity in this case is of 2mg/digit. Then, in order to
+              //convert the Y axial output of the Accelerometer to a floating point in m/s2 units, we need to multiply
+              // by 9.806* 0.001, that is the equivalent value of an mg in m/s2.        
+                    AccY = (ValueY*2*9.806*0.001); //The final result is set in a float variable.
+              //Cast the floating point values to an int variable without losing information through the
+                    ValueY1= AccY * 1000;  //multiplication by 1000.
+                    ValueArray[5] = (uint8_t)(ValueY1 & 0xFF);
+                    ValueArray[6] = (uint8_t)(ValueY1 >> 8);
+                    ValueArray[7] = (uint8_t)(ValueY1 >> 16);
+                    ValueArray[8] = (uint8_t)(ValueY1 >> 24);
                 
-                UART_Debug_PutArray(OutArray, 8);
-              }
-           }
+                    
+                    ValueZ = (int16)((AccData[4] | (AccData[5]<<8)))>>4;
+            //We need to multiply ValueZ by 2 because the sensitivity in this case is of 2mg/digit. Then, in order to
+           //convert the Z axial output of the Accelerometer to a floating point in m/s2 units, we need to multiply
+           // by 9.806* 0.001, that is the equivalent value of an mg in m/s2.   
+                    AccZ = (ValueZ*2*9.806*0.001); //The final result is set in a float variable.
+           //Cast the floating point values to an int variable without losing information through the
+                    ValueZ1= AccZ * 1000;  //multiplication by 1000.
+                    ValueArray[9] = (uint8_t)(ValueZ1 & 0xFF);
+                    ValueArray[10] = (uint8_t)(ValueZ1 >> 8);
+                    ValueArray[11] = (uint8_t)(ValueZ1 >> 16);
+                    ValueArray[12] = (uint8_t)(ValueZ1 >> 24);
+                    
+                    UART_Debug_PutArray(ValueArray, 14); // Sending the informations to the UART
+                    
+                    FlagIsr = 0; // Set the FlagIsr to 0
+                    }
+                }
+            }
+         
         }
-      }
-   }
-        
-        
+    }    
 }
 
 /* [] END OF FILE */
