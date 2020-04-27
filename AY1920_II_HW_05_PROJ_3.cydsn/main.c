@@ -70,7 +70,6 @@ int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
 
-    /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     I2C_Peripheral_Start();
     UART_Debug_Start();
     
@@ -207,8 +206,8 @@ int main(void)
     uint8_t AccData[6];
     uint8_t status_register;
     int16_t ValueX, ValueY, ValueZ;
-    int32 ValueX1, ValueY1, ValueZ1;
-    float32 AccX, AccY, AccZ;
+    int32 IntX, IntY, IntZ;
+    float32 FloatX, FloatY, FloatZ;
     
     ValueArray[0] = header;
     ValueArray[13] = footer;
@@ -227,7 +226,7 @@ int main(void)
         
           if(error==NO_ERROR) 
           { 
-           //Checking if ZYXDA is set to 1. This condition means that a new set of data is avaiable.
+           //Checking if ZYXDA is set to 1. This condition means that a new set of data is available.
               if((status_register & 1<<3) == 8)
               { 
              //It is used a multiread function because the registers are consecutive.
@@ -242,39 +241,39 @@ int main(void)
                 //We need to multiply ValueX by 2 because the sensitivity in this case is of 2mg/digit. Then, in order to
                 //convert the X axial output of the Accelerometer to a floating point in m/s2 units, we need to multiply
                 // by 9.806* 0.001, that is the equivalent value of an mg in m/s2.
-                    AccX = (ValueX*2*9.806*0.001); // The final result is set in a float variable.
+                    FloatX = (ValueX*2*9.806*0.001); // The final result is set in a float variable.
                 //Cast the floating point values to an int variable without losing information through the
-                    ValueX1= AccX * 1000; //multiplication by 1000.
-                    ValueArray[1] = (uint8_t)(ValueX1 & 0xFF);
-                    ValueArray[2] = (uint8_t)(ValueX1 >> 8);
-                    ValueArray[3] = (uint8_t)(ValueX1 >> 16);
-                    ValueArray[4] = (uint8_t)(ValueX1 >> 24);
+                    IntX= FloatX * 1000; //multiplication by 1000.
+                    ValueArray[1] = (uint8_t)(IntX & 0xFF);
+                    ValueArray[2] = (uint8_t)(IntX >> 8);
+                    ValueArray[3] = (uint8_t)(IntX >> 16);
+                    ValueArray[4] = (uint8_t)(IntX >> 24);
             
             
                     ValueY = (int16)((AccData[2] | (AccData[3]<<8)))>>4;
                //We need to multiply ValueY by 2 because the sensitivity in this case is of 2mg/digit. Then, in order to
               //convert the Y axial output of the Accelerometer to a floating point in m/s2 units, we need to multiply
               // by 9.806* 0.001, that is the equivalent value of an mg in m/s2.        
-                    AccY = (ValueY*2*9.806*0.001); //The final result is set in a float variable.
+                    FloatY = (ValueY*2*9.806*0.001); //The final result is set in a float variable.
               //Cast the floating point values to an int variable without losing information through the
-                    ValueY1= AccY * 1000;  //multiplication by 1000.
-                    ValueArray[5] = (uint8_t)(ValueY1 & 0xFF);
-                    ValueArray[6] = (uint8_t)(ValueY1 >> 8);
-                    ValueArray[7] = (uint8_t)(ValueY1 >> 16);
-                    ValueArray[8] = (uint8_t)(ValueY1 >> 24);
+                    IntY= FloatY * 1000;  //multiplication by 1000.
+                    ValueArray[5] = (uint8_t)(IntY & 0xFF);
+                    ValueArray[6] = (uint8_t)(IntY >> 8);
+                    ValueArray[7] = (uint8_t)(IntY >> 16);
+                    ValueArray[8] = (uint8_t)(IntY >> 24);
                 
                     
                     ValueZ = (int16)((AccData[4] | (AccData[5]<<8)))>>4;
             //We need to multiply ValueZ by 2 because the sensitivity in this case is of 2mg/digit. Then, in order to
            //convert the Z axial output of the Accelerometer to a floating point in m/s2 units, we need to multiply
            // by 9.806* 0.001, that is the equivalent value of an mg in m/s2.   
-                    AccZ = (ValueZ*2*9.806*0.001); //The final result is set in a float variable.
+                    FloatZ = (ValueZ*2*9.806*0.001); //The final result is set in a float variable.
            //Cast the floating point values to an int variable without losing information through the
-                    ValueZ1= AccZ * 1000;  //multiplication by 1000.
-                    ValueArray[9] = (uint8_t)(ValueZ1 & 0xFF);
-                    ValueArray[10] = (uint8_t)(ValueZ1 >> 8);
-                    ValueArray[11] = (uint8_t)(ValueZ1 >> 16);
-                    ValueArray[12] = (uint8_t)(ValueZ1 >> 24);
+                    IntZ= FloatZ * 1000;  //multiplication by 1000.
+                    ValueArray[9] = (uint8_t)(IntZ & 0xFF);
+                    ValueArray[10] = (uint8_t)(IntZ >> 8);
+                    ValueArray[11] = (uint8_t)(IntZ >> 16);
+                    ValueArray[12] = (uint8_t)(IntZ >> 24);
                     
                     UART_Debug_PutArray(ValueArray, 14); // Sending the informations to the UART
                     

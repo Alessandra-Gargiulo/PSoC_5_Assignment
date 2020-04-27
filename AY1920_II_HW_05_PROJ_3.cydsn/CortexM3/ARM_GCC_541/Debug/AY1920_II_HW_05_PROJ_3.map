@@ -1315,43 +1315,43 @@ END GROUP
  .debug_frame   0x00001a48       0x20 c:/program files (x86)/cypress/psoc creator/4.3/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-nano-msizer.o)
  .debug_frame   0x00001a68       0x5c c:/program files (x86)/cypress/psoc creator/4.3/psoc creator/import/gnu/arm/5.4.1/bin/../lib/gcc/arm-none-eabi/5.4.1/../../../../arm-none-eabi/lib/armv7-m\libg_nano.a(lib_a-reent.o)
 
-.debug_str      0x00000000     0x20a7
+.debug_str      0x00000000     0x20a4
  *(.debug_str)
- .debug_str     0x00000000      0x328 .\CortexM3\ARM_GCC_541\Debug\main.o
-                                0x392 (size before relaxing)
- .debug_str     0x00000328      0x125 .\CortexM3\ARM_GCC_541\Debug\I2C_Interface.o
+ .debug_str     0x00000000      0x325 .\CortexM3\ARM_GCC_541\Debug\main.o
+                                0x38f (size before relaxing)
+ .debug_str     0x00000325      0x125 .\CortexM3\ARM_GCC_541\Debug\I2C_Interface.o
                                 0x360 (size before relaxing)
- .debug_str     0x0000044d       0x3a .\CortexM3\ARM_GCC_541\Debug\InterruptRoutines.o
+ .debug_str     0x0000044a       0x3a .\CortexM3\ARM_GCC_541\Debug\InterruptRoutines.o
                                 0x1dc (size before relaxing)
- .debug_str     0x00000487      0x1b0 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
+ .debug_str     0x00000484      0x1b0 .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o
                                 0x33e (size before relaxing)
- .debug_str     0x00000637       0x75 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
+ .debug_str     0x00000634       0x75 .\CortexM3\ARM_GCC_541\Debug\cymetadata.o
                                 0x1de (size before relaxing)
- .debug_str     0x000006ac      0x144 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
+ .debug_str     0x000006a9      0x144 .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o
                                 0x304 (size before relaxing)
- .debug_str     0x000007f0      0x354 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(UART_Debug.o)
+ .debug_str     0x000007ed      0x354 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(UART_Debug.o)
                                 0x529 (size before relaxing)
- .debug_str     0x00000b44      0x13f .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master.o)
+ .debug_str     0x00000b41      0x13f .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master.o)
                                 0x32f (size before relaxing)
- .debug_str     0x00000c83       0xb7 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master_INT.o)
+ .debug_str     0x00000c80       0xb7 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master_INT.o)
                                 0x2a6 (size before relaxing)
- .debug_str     0x00000d3a       0x79 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master_PM.o)
+ .debug_str     0x00000d37       0x79 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master_PM.o)
                                 0x2b6 (size before relaxing)
- .debug_str     0x00000db3      0x150 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master_MASTER.o)
+ .debug_str     0x00000db0      0x150 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(I2C_Master_MASTER.o)
                                 0x43f (size before relaxing)
- .debug_str     0x00000f03      0x1bf .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(UART_Debug_IntClock.o)
+ .debug_str     0x00000f00      0x1bf .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(UART_Debug_IntClock.o)
                                 0x378 (size before relaxing)
- .debug_str     0x000010c2      0x7eb .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(CyLib.o)
+ .debug_str     0x000010bf      0x7eb .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(CyLib.o)
                                 0xa41 (size before relaxing)
- .debug_str     0x000018ad      0x365 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(cyPm.o)
+ .debug_str     0x000018aa      0x365 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(cyPm.o)
                                 0x72d (size before relaxing)
- .debug_str     0x00001c12      0x149 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(Timer_1.o)
+ .debug_str     0x00001c0f      0x149 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(Timer_1.o)
                                 0x30f (size before relaxing)
- .debug_str     0x00001d5b       0xe5 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(isr_10.o)
+ .debug_str     0x00001d58       0xe5 .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(isr_10.o)
                                 0x2ae (size before relaxing)
- .debug_str     0x00001e40      0x1bb .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(CyFlash.o)
+ .debug_str     0x00001e3d      0x1bb .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(CyFlash.o)
                                 0x3ba (size before relaxing)
- .debug_str     0x00001ffb       0xac .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(CySpc.o)
+ .debug_str     0x00001ff8       0xac .\CortexM3\ARM_GCC_541\Debug\AY1920_II_HW_05_PROJ_3.a(CySpc.o)
                                 0x332 (size before relaxing)
 
 .debug_loc      0x00000000     0x28cf
